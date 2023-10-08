@@ -18,3 +18,54 @@ To run, use jvm parameters:
 --add-opens=java.base/sun.util.calendar=ALL-UNNAMED
 --add-opens=java.security.jgss/sun.security.krb5=ALL-UNNAMED 
 ```
+
+When the application starts, it is logged:
+```
+users count:49990
+event count:8798
+category count:11
+date2008 count:365
+venue count:202
+listings count:192497
+sales count:172456
+```
+
+
+# use Swagger OpenApi 3:
+
+open http://localhost:8080/swagger-ui.html
+
+notice it will redirect you to page
+http://localhost:8080/swagger-ui/index.html#/
+and also fill "/v3/api-docs"
+
+
+# Example of generic query:
+
+```
+http://localhost:8080/swagger-ui/index.html#/Sales%20Rest/query
+{
+    "limit": 10,
+    "exprs": [
+        "salesId", "listId"
+    ]
+}
+```
+
+Result:
+```
+[
+  {
+    "cols": [
+      1,
+      1
+    ]
+  },
+  {
+    "cols": [
+      2,
+      4
+    ]
+  },
+  ...
+```

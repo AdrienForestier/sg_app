@@ -1,5 +1,6 @@
 package fr.an.test.sparkserver.configuration;
 
+import fr.an.test.sparkserver.impl.AppDatasets;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -38,27 +39,20 @@ public class AppConfiguration {
                 .getOrCreate();
     }
 
-    public record AppDatasets(
-            Dataset<Row> userDs,
-            Dataset<Row> eventDs,
-            Dataset<Row> categoryDs,
-            Dataset<Row> date2008Ds,
-            Dataset<Row> listingDs,
-            Dataset<Row> salesDs,
-            Dataset<Row> venueDs
-            ) {}
-
     @Bean @Autowired
     public AppDatasets appDatasets(SparkSession sparkSession) {
+        log.info("loading dimension tables: users, event, category, date2008, venue (should be broadcasted)");
         Dataset<Row> userDs = loadUserDs(sparkSession);
         Dataset<Row> eventDs = loadEventDs(sparkSession);
         Dataset<Row> categoryDs = loadCategoryDs(sparkSession);
         Dataset<Row> date2008Ds = loadDate2008Ds(sparkSession);
-        Dataset<Row> listingDs = loadListingDs(sparkSession);
-        Dataset<Row> salesDs = loadSalesDs(sparkSession);
         Dataset<Row> venueDs = loadVenueDs(sparkSession);
 
-        return new AppDatasets(userDs, eventDs, categoryDs, date2008Ds, listingDs, salesDs, venueDs);
+        log.info("loading facts tables: listings, sales (should not be broadcasted/cached if too big)");
+        Dataset<Row> listingDs = loadListingDs(sparkSession);
+        Dataset<Row> salesDs = loadSalesDs(sparkSession);
+
+        return new AppDatasets(userDs, eventDs, categoryDs, date2008Ds, venueDs, listingDs, salesDs);
     }
 
     @NotNull
@@ -85,6 +79,7 @@ public class AppConfiguration {
                         "likemusicals boolean")
                 .load(appProps.getBaseLocation() + "/allusers_pipe.txt");
         userDs.cache();
+        // sparkSession.sparkContext().broadcast(userDs);
         long count = userDs.count();
         log.info("users count:" + count);
         return userDs;
@@ -142,6 +137,23 @@ public class AppConfiguration {
     }
 
     @NotNull
+    private Dataset<Row> loadVenueDs(SparkSession sparkSession) {
+        Dataset<Row> ds = sparkSession.read().format("csv")
+                .option("delimiter", "|")
+                .schema("venueid smallint not null," +
+                        "venuename string," +
+                        "venuecity string," +
+                        "venuestate string," +
+                        "venueseats integer")
+                .load(appProps.getBaseLocation() + "/venue_pipe.txt");
+        ds.cache();
+        long count = ds.count();
+        log.info("venue count:" + count);
+        return ds;
+    }
+
+
+    @NotNull
     private Dataset<Row> loadListingDs(SparkSession sparkSession) {
         Dataset<Row> ds = sparkSession.read().format("csv")
                 .option("delimiter", "|")
@@ -154,9 +166,9 @@ public class AppConfiguration {
                         "totalprice double," +
                         "listtime timestamp")
                 .load(appProps.getBaseLocation() + "/listings_pipe.txt");
-        ds.cache();
-        long count = ds.count();
-        log.info("listings count:" + count);
+//        ds.cache();
+//        long count = ds.count();
+//        log.info("listings count:" + count);
         return ds;
     }
 
@@ -175,25 +187,9 @@ public class AppConfiguration {
                         "commission double," +
                         "saletime timestamp")
                 .load(appProps.getBaseLocation() + "/sales_tab.txt");
-        ds.cache();
-        long count = ds.count();
-        log.info("sales count:" + count);
-        return ds;
-    }
-
-    @NotNull
-    private Dataset<Row> loadVenueDs(SparkSession sparkSession) {
-        Dataset<Row> ds = sparkSession.read().format("csv")
-                .option("delimiter", "|")
-                .schema("venueid smallint not null," +
-                        "venuename string," +
-                        "venuecity string," +
-                        "venuestate string," +
-                        "venueseats integer")
-                .load(appProps.getBaseLocation() + "/venue_pipe.txt");
-        ds.cache();
-        long count = ds.count();
-        log.info("venue count:" + count);
+//        ds.cache();
+//        long count = ds.count();
+//        log.info("sales count:" + count);
         return ds;
     }
 
