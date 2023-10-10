@@ -3,7 +3,7 @@
 
   <ul class="navbar-nav mr-auto">
     <li class="nav-item">
-      <a class="nav-link" href="#">Home</a>
+      <a class="nav-link" href="/home">Home</a>
     </li>
 
     <li ngbDropdown class="nav-item">
@@ -18,6 +18,15 @@
 
     <li class="nav-item">
       <a class="nav-link" href="/query">Query</a>
+    </li>
+
+    <li ngbDropdown class="nav-item">
+      <a ngbDropdownToggle id="navbarHelp" class="nav-link" role="button">
+        Help
+      </a>
+      <div ngbDropdownMenu aria-labelledby="navbarHelp" class="dropdown-menu">
+        <a class="dropdown-item" href="/test-rest">Test Rest apis</a>
+      </div>
     </li>
 
   </ul>

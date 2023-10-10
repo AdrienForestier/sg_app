@@ -1,0 +1,27 @@
+<H1>Test Rest APIs</H1>
+
+<div class="container-fluid">
+
+  <div class="row">
+    <label class="col-md-2">Sales table info</label>
+    <span class="col-md-1">
+      <button type="button" class="btn btn-outline-primary"
+              (click)="onClickGetTableInfoSales()">Get TableInfo</button>
+    </span>
+    <div class="col-md-9">
+      <textarea [ngModel]="salesTableInfoJson" cols="120" rows="20"></textarea>
+    </div>
+  </div>
+
+  <div class="row">
+    <label class="col-md-2">Sales first 20 rows</label>
+    <span class="col-md-1">
+      <button type="button" class="btn btn-outline-primary"
+              (click)="onClickQuery()">Query First Rows</button>
+    </span>
+    <div class="col-md-9">
+      <textarea [ngModel]="salesFirstRowsJson" cols="120" rows="20"></textarea>
+    </div>
+  </div>
+
+</div>
