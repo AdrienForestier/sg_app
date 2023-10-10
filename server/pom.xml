@@ -136,6 +136,15 @@
 
         rm -rf ../ui/src/app/ext/*; rm -rf target/generated-typescript-angular16; mvn -Pswagger-gen swagger-codegen:generate; cp -rf target/generated-typescript-angular16/* ../ui/src/app/ext/
 
+        current bug workaround: manually patch, add "override" to src/app/ext/encoder.ts
+        encodeKey(k: string): string {
+        =>
+        override encodeKey(k: string): string {
+
+        encodeValue(v: string): string {
+        =>
+        override encodeValue(v: string): string {
+
          -->
         <profile>
             <id>swagger-gen</id>
@@ -144,18 +153,18 @@
                     <plugin>
                         <groupId>io.swagger.codegen.v3</groupId>
                         <artifactId>swagger-codegen-maven-plugin</artifactId>
-                        <version>3.0.46</version>
+                        <version>3.0.47</version>
                         <configuration>
                             <inputSpec>http://localhost:8080/v3/api-docs</inputSpec>
                             <language>typescript-angular</language>
-                            <output>${basedir}/target/generated-typescript-angular7</output>
+                            <output>${basedir}/target/generated-typescript-angular16</output>
                             <configOptions>
                                 <ngVersion>16</ngVersion>
                             </configOptions>
                         </configuration>
                         <executions>
                             <execution>
-                                <id>generate-swagger-typescript-angular-7</id>
+                                <id>generate-swagger-typescript-angular-16</id>
                                 <phase>generate-sources</phase>
                                 <goals>
                                     <goal>generate</goal>
