@@ -1,31 +1,32 @@
 package fr.an.test.sparkserver.impl;
 
+import fr.an.test.sparkserver.metadata.TableInfo;
 import fr.an.test.sparkserver.rest.dto.QueryRequestDTO;
 import fr.an.test.sparkserver.rest.dto.generic.RowDTO;
 import fr.an.test.sparkserver.rest.dto.generic.TableInfoDTO;
-import fr.an.test.sparkserver.rest.dto.specific.SalesDTO;
 import fr.an.test.sparkserver.utils.LsUtils;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.spark.sql.*;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
 @Slf4j
-public class SalesDbService extends AbstractDbService {
+public class TableGenericQueryService<T> extends AbstractDbService {
 
-    public static final Encoder<SalesDTO> ENCODER_SalesDTO = Encoders.bean(SalesDTO.class);
+    protected final TableInfo<T> tableInfo;
 
+    protected final Dataset<Row> tableDataset;
 
-    protected final Dataset<Row> salesDs;
+    protected final Encoder<T> sparkEncoder;
 
     //---------------------------------------------------------------------------------------------
 
-    public SalesDbService(SparkSession sparkSession, AppDatasets appDatasets) {
-        super(sparkSession, appDatasets);
-        this.salesDs = appDatasets.salesDs();
+    public TableGenericQueryService(SparkSession sparkSession, TableInfo<T> tableInfo, Dataset<Row> tableDataset) {
+        super(sparkSession);
+        this.tableInfo = tableInfo;
+        this.tableDataset = tableDataset;
+        this.sparkEncoder = Encoders.bean(tableInfo.objectClass);
     }
 
     //---------------------------------------------------------------------------------------------
@@ -34,21 +35,21 @@ public class SalesDbService extends AbstractDbService {
         return DbMetadata.Sales_.toDTO();
     }
 
-    public List<SalesDTO> findAllDtos() {
-        return toDtos(salesDs);
+    public List<T> findAllDtos() {
+        return toDtos(tableDataset);
     }
 
-    public List<SalesDTO> firstDtos(int limit) {
-        return toDtos(salesDs.limit(limit));
+    public List<T> firstDtos(int limit) {
+        return toDtos(tableDataset.limit(limit));
     }
 
-    protected List<SalesDTO> toDtos(Dataset<Row> ds) {
-        return ds.as(ENCODER_SalesDTO).collectAsList();
+    protected List<T> toDtos(Dataset<Row> ds) {
+        return ds.as(sparkEncoder).collectAsList();
     }
 
     public List<RowDTO> query(QueryRequestDTO req) {
-        val colGetters = LsUtils.map(req.exprs, expr -> DbMetadata.Sales_.resolve(expr));
-        Dataset<Row> ds = salesDs;
+        val colGetters = LsUtils.map(req.exprs, expr -> tableInfo.resolve(expr));
+        Dataset<Row> ds = tableDataset;
         if (req.limit != 0) {
             ds = ds.limit(req.limit);
         }

@@ -35,8 +35,8 @@ public class TableInfoBuilder<T> {
         this.fkBuilderFunction = fkBuilderFunction;
     }
 
-    public TableInfo build() {
-        return new TableInfo(this);
+    public TableInfo<T> build() {
+        return new TableInfo<T>(this);
     }
 
     //---------------------------------------------------------------------------------------------

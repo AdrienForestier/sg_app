@@ -10,21 +10,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.function.Function;
 
-@Service
-@Slf4j
 public abstract class AbstractDbService {
-
-    public static final Encoder<RowDTO> ENCODER_RowDTO = Encoders.bean(RowDTO.class);
 
     protected final SparkSession sparkSession;
 
-    protected final AppDatasets appDatasets;
-
-    public AbstractDbService(SparkSession sparkSession, AppDatasets appDatasets) {
+    public AbstractDbService(SparkSession sparkSession) {
         this.sparkSession = sparkSession;
-        this.appDatasets = appDatasets;
     }
-
 
     protected static <T> RowDTO toRowDTO(T obj, List<? extends Function<T,?>> colGetters) {
         int len = colGetters.size();
