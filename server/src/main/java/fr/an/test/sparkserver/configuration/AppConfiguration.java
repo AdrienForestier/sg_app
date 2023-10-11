@@ -59,7 +59,7 @@ public class AppConfiguration {
     private Dataset<Row> loadUserDs(SparkSession sparkSession) {
         Dataset<Row> userDs = sparkSession.read().format("csv")
                 .option("delimiter", "|")
-                .schema("userid integer not null," +
+                .schema("userId integer not null," +
                         "username string," +
                         "firstname string," +
                         "lastname string," +
@@ -157,10 +157,10 @@ public class AppConfiguration {
     private Dataset<Row> loadListingDs(SparkSession sparkSession) {
         Dataset<Row> ds = sparkSession.read().format("csv")
                 .option("delimiter", "|")
-                .schema("listid integer not null," +
-                        "sellerid integer not null," +
-                        "eventid integer not null," +
-                        "dateid smallint not null," +
+                .schema("listId integer not null," +
+                        "sellerId integer not null," +
+                        "eventId integer not null," +
+                        "dateId smallint not null," +
                         "numtickets smallint not null," +
                         "priceperticket double," +
                         "totalprice double," +
@@ -176,12 +176,12 @@ public class AppConfiguration {
     private Dataset<Row> loadSalesDs(SparkSession sparkSession) {
         Dataset<Row> ds = sparkSession.read().format("csv")
                 .option("delimiter", "\t")
-                .schema("salesid integer not null," +
-                        "listid integer not null," +
-                        "sellerid integer not null," +
-                        "buyerid integer not null," +
-                        "eventid integer not null," +
-                        "dateid smallint not null," +
+                .schema("salesId integer not null," +
+                        "listId integer not null," +
+                        "sellerId integer not null," +
+                        "buyerId integer not null," +
+                        "eventId integer not null," +
+                        "dateId smallint not null," +
                         "qtysold smallint not null," +
                         "pricepaid double," +
                         "commission double," +

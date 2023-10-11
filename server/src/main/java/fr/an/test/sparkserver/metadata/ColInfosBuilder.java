@@ -1,40 +1,42 @@
 package fr.an.test.sparkserver.metadata;
 
+import shaded.parquet.org.apache.thrift.protocol.TField;
+
 import java.time.Instant;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-public class ColInfosBuilder<TObj> {
-    protected LinkedHashMap<String, ColInfo<TObj,?>> cols = new LinkedHashMap<>();
+public class ColInfosBuilder<T> {
+    protected LinkedHashMap<String, ColInfo<T,?>> cols = new LinkedHashMap<>();
 
     //---------------------------------------------------------------------------------------------
 
-    public Map<String, ColInfo<TObj,?>> build() {
+    public Map<String, ColInfo<T,?>> build() {
         return Collections.unmodifiableMap(cols);
     }
 
-    public void colInt(String name, Function<TObj,Integer> getter) {
-        col(new ColInfo<TObj,Integer>(name, Integer.class, getter));
+    public void colInt(String name, Function<T,Integer> getter) {
+        col(new ColInfo<T,Integer>(name, Integer.class, getter));
     }
-    public void colString(String name, Function<TObj,String> getter) {
-        col(new ColInfo<TObj,String>(name, String.class, getter));
+    public void colString(String name, Function<T,String> getter) {
+        col(new ColInfo<T,String>(name, String.class, getter));
     }
-    public void colDouble(String name, Function<TObj,Double> getter) {
-        col(new ColInfo<TObj,Double>(name, Double.class, getter));
+    public void colDouble(String name, Function<T,Double> getter) {
+        col(new ColInfo<T,Double>(name, Double.class, getter));
     }
-    public void colInstant(String name, Function<TObj,Instant> getter) {
-        col(new ColInfo<TObj, Instant>(name, Instant.class, getter));
+    public void colInstant(String name, Function<T,Instant> getter) {
+        col(new ColInfo<T, Instant>(name, Instant.class, getter));
     }
-    public void colBoolean(String name, Function<TObj,Boolean> getter) {
-        col(new ColInfo<TObj,Boolean>(name, Boolean.class, getter));
+    public void colBoolean(String name, Function<T,Boolean> getter) {
+        col(new ColInfo<T,Boolean>(name, Boolean.class, getter));
     }
-    public <T> void col(String name, Class<T> colType, Function<TObj,T> getter) {
-        col(new ColInfo<TObj,T>(name, colType, getter));
+    public <TField> void col(String name, Class<TField> colType, Function<T,TField> getter) {
+        col(new ColInfo<T,TField>(name, colType, getter));
     }
 
-    public void col(ColInfo<TObj,?> col) {
+    public void col(ColInfo<T,?> col) {
         cols.put(col.name, col);
     }
 
