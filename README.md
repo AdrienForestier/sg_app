@@ -22,6 +22,24 @@ The csv database files are taken from Amazon Redshift sample:
 - Sales
 
 
+The project aim to promote generic over specific Rest APIS and UI data visualisation.
+
+This relies on some fundamental concepts:
+- schema description of tables (column name + types)
+- columns metadata for PrimaryKey, ForeignKey, and other columns (maybe simple values, aggregatable values called "Measures",
+  or structured columns (temporal graph, heatmap for day of week/hour, etc)
+- declaration of additionnal join relationship between tables
+- navigation inside object sub-fields, using joined relationships
+- extension principle (like Schema stitching in GraphQL to combine several schemas)
+- generic SQL query builder for "select .. from .. join .. where ... group by ... order by .. having .." 
+
+Some comparison can be made to
+
+- GraphQL
+- Google LookerML
+- PowerBI, Tableau, BusinessObject, SSAS, ..
+- jdbc + SQL
+
 
 # Rest Server (using Springboot + embedded Spark standalone)
 
@@ -44,6 +62,23 @@ When launching, you can test locally using Swagger, directly from your web brows
 
 cf doc for server
 [server/README.md](server/README.md)
+
+The server exposes several king of Rest APIs:
+
+7 specific apis, in a traditional Rest style
+- specific query rest api for each table (typed Json)
+
+7 query api (1 per table), where you can specify the columns to extract, like SQL "select col1,col2.. from table" 
+- metadata api for specific table description, to list all available columns
+- generic query rest api for specific table, choosing columns
+
+1 generic dispatcher query: choose the tableName
+- metadata api for any table given by name, to list all available columns
+- generic query rest api for any table given by name, choosing columns
+
+More to come: ... more advanced SQL query builder
+
+
 
 
 # Web User-Interface (using Angular)
