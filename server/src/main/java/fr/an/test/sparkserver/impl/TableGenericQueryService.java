@@ -7,7 +7,10 @@ import fr.an.test.sparkserver.rest.dto.generic.TableInfoDTO;
 import fr.an.test.sparkserver.utils.LsUtils;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.apache.spark.sql.*;
+import org.apache.spark.sql.Dataset;
+import org.apache.spark.sql.Encoder;
+import org.apache.spark.sql.Encoders;
+import org.apache.spark.sql.Row;
 
 import java.util.List;
 
@@ -22,8 +25,7 @@ public class TableGenericQueryService<T> extends AbstractDbService {
 
     //---------------------------------------------------------------------------------------------
 
-    public TableGenericQueryService(SparkSession sparkSession, TableInfo<T> tableInfo, Dataset<Row> tableDataset) {
-        super(sparkSession);
+    public TableGenericQueryService(TableInfo<T> tableInfo, Dataset<Row> tableDataset) {
         this.tableInfo = tableInfo;
         this.tableDataset = tableDataset;
         this.sparkEncoder = Encoders.bean(tableInfo.objectClass);
@@ -32,7 +34,7 @@ public class TableGenericQueryService<T> extends AbstractDbService {
     //---------------------------------------------------------------------------------------------
 
     public TableInfoDTO tableInfo() {
-        return DbMetadata.Sales_.toDTO();
+        return tableInfo.toDTO();
     }
 
     public List<T> findAllDtos() {

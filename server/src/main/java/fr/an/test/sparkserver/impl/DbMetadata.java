@@ -15,7 +15,7 @@ public class DbMetadata {
     public static final TableInfo<UserDTO> User_ = new TableInfoBuilder<>("User", UserDTO.class,
             cols -> {
                 // PrimaryKey column(s)
-                cols.colInt("", UserDTO::getUserId);
+                cols.colInt("userId", UserDTO::getUserId);
                 // othercolumns
                 cols.colString("userName", UserDTO::getUserName);
                 cols.colString("firstName", UserDTO::getFirstName);
@@ -24,16 +24,16 @@ public class DbMetadata {
                 cols.colString("state", UserDTO::getState);
                 cols.colString("email", UserDTO::getEmail);
                 cols.colString("phone", UserDTO::getPhone);
-                cols.colBoolean("likeSports", UserDTO::isLikeSports);
-                cols.colBoolean("likeTheatre", UserDTO::isLikeTheatre);
-                cols.colBoolean("likeConcerts", UserDTO::isLikeConcerts);
-                cols.colBoolean("likeJazz", UserDTO::isLikeJazz);
-                cols.colBoolean("likeClassical", UserDTO::isLikeClassical);
-                cols.colBoolean("likeOpera", UserDTO::isLikeOpera);
-                cols.colBoolean("likeRock", UserDTO::isLikeRock);
-                cols.colBoolean("likeVegas", UserDTO::isLikeVegas);
-                cols.colBoolean("likeBroadway", UserDTO::isLikeBroadway);
-                cols.colBoolean("likeMusicals", UserDTO::isLikeMusicals);
+                cols.colBoolean("likeSports", UserDTO::getLikeSports);
+                cols.colBoolean("likeTheatre", UserDTO::getLikeTheatre);
+                cols.colBoolean("likeConcerts", UserDTO::getLikeConcerts);
+                cols.colBoolean("likeJazz", UserDTO::getLikeJazz);
+                cols.colBoolean("likeClassical", UserDTO::getLikeClassical);
+                cols.colBoolean("likeOpera", UserDTO::getLikeOpera);
+                cols.colBoolean("likeRock", UserDTO::getLikeRock);
+                cols.colBoolean("likeVegas", UserDTO::getLikeVegas);
+                cols.colBoolean("likeBroadway", UserDTO::getLikeBroadway);
+                cols.colBoolean("likeMusicals", UserDTO::getLikeMusicals);
             },
             "",
             fks -> {}

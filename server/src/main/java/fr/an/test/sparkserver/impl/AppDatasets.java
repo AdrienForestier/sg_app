@@ -7,9 +7,31 @@ public record AppDatasets(
         Dataset<Row> userDs,
         Dataset<Row> eventDs,
         Dataset<Row> categoryDs,
-        Dataset<Row> date2008Ds,
+        Dataset<Row> dateDs,
         Dataset<Row> venueDs,
         Dataset<Row> listingDs,
         Dataset<Row> salesDs
 ) {
+
+    public Dataset<Row> datasetByName(String name) {
+        switch(name) {
+            case "User":
+                return userDs;
+            case "Event":
+                return eventDs;
+            case "Category":
+                return categoryDs;
+            case "Date":
+                return dateDs;
+            case "Venue":
+                return venueDs;
+            case "Listing":
+                return listingDs;
+            case "Sales":
+                return salesDs;
+            default:
+                throw new IllegalArgumentException();
+        }
+    }
+
 }

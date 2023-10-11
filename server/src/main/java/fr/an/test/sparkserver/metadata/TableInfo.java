@@ -3,6 +3,8 @@ package fr.an.test.sparkserver.metadata;
 import fr.an.test.sparkserver.rest.dto.generic.TableInfoDTO;
 import fr.an.test.sparkserver.utils.LsUtils;
 import lombok.val;
+import org.apache.spark.sql.Encoder;
+import org.apache.spark.sql.Encoders;
 
 import java.util.Collections;
 import java.util.List;
@@ -16,11 +18,14 @@ public class TableInfo<T> {
     protected final List<String> pkColumns;
     protected final List<ForeignKeyInfo> foreignKeyInfos;
 
+    protected final Encoder<T> sparkEncoder;
+
     //---------------------------------------------------------------------------------------------
 
     /*pp*/ TableInfo(TableInfoBuilder<T> builder) {
         this.name = builder.name;
         this.objectClass = builder.objectClass;
+        this.sparkEncoder = Encoders.bean(objectClass);
 
         ColInfosBuilder<T> colBuilder = new ColInfosBuilder<T>();
         builder.colBuilderFunction.accept(colBuilder);

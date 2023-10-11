@@ -16,15 +16,15 @@ public class UserDTO {
     String state;
     String email;
     String phone;
-    boolean likeSports;
-    boolean likeTheatre;
-    boolean likeConcerts;
-    boolean likeJazz;
-    boolean likeClassical;
-    boolean likeOpera;
-    boolean likeRock;
-    boolean likeVegas;
-    boolean likeBroadway;
-    boolean likeMusicals;
+    Boolean likeSports;
+    Boolean likeTheatre;
+    Boolean likeConcerts;
+    Boolean likeJazz;
+    Boolean likeClassical;
+    Boolean likeOpera;
+    Boolean likeRock;
+    Boolean likeVegas;
+    Boolean likeBroadway;
+    Boolean likeMusicals;
 
 }
