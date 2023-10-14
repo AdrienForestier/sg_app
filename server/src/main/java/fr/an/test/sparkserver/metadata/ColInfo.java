@@ -9,7 +9,8 @@ public class ColInfo<TObj,TCol> {
     public final Class<TCol> typeClass;
     public final Function<TObj,TCol> getter;
 
-    public ColInfo(String name, Class<TCol> typeClass, Function<TObj, TCol> getter) {
+    public ColInfo(String name, Class<TCol> typeClass,
+                   Function<TObj, TCol> getter) {
         this.name = name;
         this.typeClass = typeClass;
         this.getter = getter;

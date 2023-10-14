@@ -4,6 +4,7 @@ import fr.an.test.sparkserver.impl.AppDatasets;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.spark.sql.AnalysisException;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
@@ -40,19 +41,28 @@ public class AppConfiguration {
     }
 
     @Bean @Autowired
-    public AppDatasets appDatasets(SparkSession sparkSession) {
+    public AppDatasets appDatasets(SparkSession sparkSession) throws Exception {
         log.info("loading dimension tables: users, event, category, date2008, venue (should be broadcasted)");
         Dataset<Row> userDs = loadUserDs(sparkSession);
         Dataset<Row> eventDs = loadEventDs(sparkSession);
         Dataset<Row> categoryDs = loadCategoryDs(sparkSession);
-        Dataset<Row> date2008Ds = loadDate2008Ds(sparkSession);
+        Dataset<Row> dateDs = loadDate2008Ds(sparkSession);
         Dataset<Row> venueDs = loadVenueDs(sparkSession);
 
         log.info("loading facts tables: listings, sales (should not be broadcasted/cached if too big)");
         Dataset<Row> listingDs = loadListingDs(sparkSession);
         Dataset<Row> salesDs = loadSalesDs(sparkSession);
 
-        return new AppDatasets(userDs, eventDs, categoryDs, date2008Ds, venueDs, listingDs, salesDs);
+        log.info("register as global temporary view (replace metastore..)");
+        userDs.createGlobalTempView("user");
+        eventDs.createGlobalTempView("event");
+        categoryDs.createGlobalTempView("category");
+        dateDs.createGlobalTempView("date");
+        venueDs.createGlobalTempView("venue");
+        listingDs.createGlobalTempView("listing");
+        salesDs.createGlobalTempView("sales");
+
+        return new AppDatasets(userDs, eventDs, categoryDs, dateDs, venueDs, listingDs, salesDs);
     }
 
     @NotNull
