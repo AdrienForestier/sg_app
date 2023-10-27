@@ -4,6 +4,7 @@ import fr.an.test.sparkserver.impl.AppDatasets;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.apache.spark.sql.AnalysisException;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
@@ -33,6 +34,8 @@ public class AppConfiguration {
 
     @Bean
     public SparkSession sparkSession() {
+        logEnvVarValue("HADOOP_HOME", true);
+        logEnvVarValue("HADOOP_CONF_DIR", false);
         return SparkSession.builder()
                 .appName("testserver")
                 .master("local[3]")
@@ -40,29 +43,46 @@ public class AppConfiguration {
                 .getOrCreate();
     }
 
+    protected static void logEnvVarValue(String envVarName, boolean warnIfAbsent) {
+        String value = System.getenv(envVarName);
+        if (value != null) {
+            log.info("detected environment variable " + envVarName + " : " + value);
+        } else {
+            if (warnIfAbsent) {
+                log.warn("environment variable " + envVarName + " not set (check your conf)");
+            }
+        }
+    }
+
     @Bean @Autowired
     public AppDatasets appDatasets(SparkSession sparkSession) throws Exception {
-        log.info("loading dimension tables: users, event, category, date2008, venue (should be broadcasted)");
+        log.info("loading dimension tables: users, event, category, date2008, venue (should be broadcast)");
         Dataset<Row> userDs = loadUserDs(sparkSession);
         Dataset<Row> eventDs = loadEventDs(sparkSession);
         Dataset<Row> categoryDs = loadCategoryDs(sparkSession);
         Dataset<Row> dateDs = loadDate2008Ds(sparkSession);
         Dataset<Row> venueDs = loadVenueDs(sparkSession);
 
-        log.info("loading facts tables: listings, sales (should not be broadcasted/cached if too big)");
+        log.info("loading facts tables: listings, sales (should not be broadcast/cached if too big)");
         Dataset<Row> listingDs = loadListingDs(sparkSession);
         Dataset<Row> salesDs = loadSalesDs(sparkSession);
 
         log.info("register as global temporary view (replace metastore..)");
-        userDs.createGlobalTempView("user");
-        eventDs.createGlobalTempView("event");
-        categoryDs.createGlobalTempView("category");
-        dateDs.createGlobalTempView("date");
-        venueDs.createGlobalTempView("venue");
-        listingDs.createGlobalTempView("listing");
-        salesDs.createGlobalTempView("sales");
+        registerAsGlobalTempView(userDs, "user");
+        registerAsGlobalTempView(eventDs, "event");
+        registerAsGlobalTempView(categoryDs, "category");
+        registerAsGlobalTempView(dateDs, "date");
+        registerAsGlobalTempView(venueDs, "venue");
+        registerAsGlobalTempView(listingDs, "listing");
+        registerAsGlobalTempView(salesDs, "sales");
 
         return new AppDatasets(userDs, eventDs, categoryDs, dateDs, venueDs, listingDs, salesDs);
+    }
+
+    private static void registerAsGlobalTempView(Dataset<Row> ds, String tableName) throws AnalysisException {
+        val dsVarName = tableName + "Ds";
+        log.info("register spark DataSet<Row> " + dsVarName + " as global temp view '" + tableName + "'");
+        ds.createGlobalTempView(tableName);
     }
 
     @NotNull
@@ -91,7 +111,7 @@ public class AppConfiguration {
         userDs.cache();
         // sparkSession.sparkContext().broadcast(userDs);
         long count = userDs.count();
-        log.info("users count:" + count);
+        log.info("loaded csv file 'users' count: " + count);
         return userDs;
     }
 
@@ -108,7 +128,7 @@ public class AppConfiguration {
                 .load(appProps.getBaseLocation() + "/allevents_pipe.txt");
         eventDs.cache();
         long count = eventDs.count();
-        log.info("event count:" + count);
+        log.info("loaded csv file 'event' count: " + count);
         return eventDs;
     }
 
@@ -123,7 +143,7 @@ public class AppConfiguration {
                 .load(appProps.getBaseLocation() + "/category_pipe.txt");
         ds.cache();
         long count = ds.count();
-        log.info("category count:" + count);
+        log.info("loaded csv file 'category' count: " + count);
         return ds;
     }
 
@@ -142,7 +162,7 @@ public class AppConfiguration {
                 .load(appProps.getBaseLocation() + "/date2008_pipe.txt");
         ds.cache();
         long count = ds.count();
-        log.info("date2008 count:" + count);
+        log.info("loaded csv file 'date2008' count: " + count);
         return ds;
     }
 
@@ -158,7 +178,7 @@ public class AppConfiguration {
                 .load(appProps.getBaseLocation() + "/venue_pipe.txt");
         ds.cache();
         long count = ds.count();
-        log.info("venue count:" + count);
+        log.info("loaded csv file 'venue' count: " + count);
         return ds;
     }
 
@@ -179,6 +199,7 @@ public class AppConfiguration {
 //        ds.cache();
 //        long count = ds.count();
 //        log.info("listings count:" + count);
+        log.info("lazy-load Dataset for csv file 'listing'");
         return ds;
     }
 
@@ -200,6 +221,7 @@ public class AppConfiguration {
 //        ds.cache();
 //        long count = ds.count();
 //        log.info("sales count:" + count);
+        log.info("lazy-load Dataset for csv file 'sales'");
         return ds;
     }
 

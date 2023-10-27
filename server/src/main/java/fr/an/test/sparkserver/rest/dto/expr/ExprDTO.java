@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import lombok.AllArgsConstructor;
 import scala.annotation.meta.param;
 
+import java.util.List;
+
 @JsonSubTypes(value= {
     @JsonSubTypes.Type(value = ExprDTO.LiteralExprDTO.class),
     @JsonSubTypes.Type(value = ExprDTO.FieldAccessExprDTO.class),
@@ -21,6 +23,8 @@ public abstract class ExprDTO {
         public abstract TRes caseRefByIdLookup(ExprDTO.RefByIdLookupExprDTO expr, TParam param);
         public abstract TRes caseGroupAccumulator(ExprDTO.GroupAccumulatorExprDTO expr, TParam param);
         public abstract TRes caseBinaryOp(ExprDTO.BinaryOpExprDTO expr, TParam param);
+        public abstract TRes caseUnaryOp(ExprDTO.UnaryOpExprDTO expr, TParam param);
+        public abstract TRes caseApplyFunc(ExprDTO.ApplyFuncExprDTO expr, TParam param);
     }
 
 
@@ -83,6 +87,32 @@ public abstract class ExprDTO {
         @Override
         public <TRes,TParam> TRes accept(SimpleExprDTOVisitor<TRes,TParam> visitor, TParam param) {
             return visitor.caseBinaryOp(this, param);
+        }
+
+    }
+
+
+    @AllArgsConstructor
+    public static class UnaryOpExprDTO extends ExprDTO {
+        public String op;
+        public ExprDTO expr;
+
+        @Override
+        public <TRes,TParam> TRes accept(SimpleExprDTOVisitor<TRes,TParam> visitor, TParam param) {
+            return visitor.caseUnaryOp(this, param);
+        }
+
+    }
+
+
+    @AllArgsConstructor
+    public static class ApplyFuncExprDTO extends ExprDTO {
+        public String function;
+        public List<ExprDTO> args;
+
+        @Override
+        public <TRes,TParam> TRes accept(SimpleExprDTOVisitor<TRes,TParam> visitor, TParam param) {
+            return visitor.caseApplyFunc(this, param);
         }
 
     }

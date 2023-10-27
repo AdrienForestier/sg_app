@@ -12,4 +12,8 @@ public abstract class SimpleExprVisitor2<TRes,TParam> {
 
     public abstract TRes caseBinaryOp(SimpleExpr.BinaryOpExpr expr, TParam param);
 
+    public abstract TRes caseUnaryOp(SimpleExpr.UnaryOpExpr expr, TParam param);
+
+    public abstract TRes caseApplyFunc(SimpleExpr.ApplyFuncExpr expr, TParam param);
+
 }

@@ -1,10 +1,9 @@
 package fr.an.test.sparkserver.impl;
 
 import fr.an.test.sparkserver.expr.*;
-import fr.an.test.sparkserver.metadata.EvalCtx;
 import fr.an.test.sparkserver.metadata.TableInfo;
 import fr.an.test.sparkserver.rest.dto.QueryRequestDTO;
-import fr.an.test.sparkserver.rest.dto.expr.ExprDTO;
+import fr.an.test.sparkserver.rest.dto.QuerySimpleTableColumnsParamsDTO;
 import fr.an.test.sparkserver.rest.dto.generic.RowDTO;
 import fr.an.test.sparkserver.rest.dto.generic.TableInfoDTO;
 import fr.an.test.sparkserver.utils.LsUtils;
@@ -16,6 +15,7 @@ import org.apache.spark.sql.Encoders;
 import org.apache.spark.sql.Row;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,25 +58,26 @@ public class TableGenericQueryService<T> extends AbstractDbService {
         return ds.as(sparkEncoder).collectAsList();
     }
 
-    public List<RowDTO> query(QueryRequestDTO req) {
-        Class<T> objClass = null; // TODO
-        List<BiFunction<T,EvalCtx,Object>> evalFuncs =
-                LsUtils.map(req.select, x -> resolveExprObjEvalFunction(objClass, x.expr));
+    public List<RowDTO> querySimpleCols(QuerySimpleTableColumnsParamsDTO req) {
+        return querySimpleCols(req.cols, req.limitCount);
+    }
+
+    public List<RowDTO> querySimpleCols(List<String> selectCols, int limitCount) {
+        List<Function<T,?>> dtoGetters = LsUtils.map(selectCols, col -> tableInfo.resolve(col));
         Dataset<Row> ds = tableDataset;
-        if (req.limit != 0) {
-            ds = ds.limit(req.limit);
+        if (limitCount != 0) {
+            ds = ds.limit(limitCount);
         }
         // can not call Dataset.map() .. java.io.NotSerializableException
         val dtos = toDtos(ds);
-        EvalCtx evalCtx = new EvalCtx();
-        return LsUtils.map(dtos, x -> toRowDTO(x, evalFuncs, evalCtx));
+        return LsUtils.map(dtos, dto -> new RowDTO(ExprEvalUtils.applyObjectGetters(dto, dtoGetters)));
     }
 
+    //---------------------------------------------------------------------------------------------
 
     protected BiFunction<T,EvalCtx,Object> resolveExprObjEvalFunction(
             Class<T> objClass,
-            ExprDTO exprDto) {
-        SimpleExpr expr = ExprDTOConverter.dtoToSimpleExpr(exprDto);
+            SimpleExpr expr) {
         // tableInfo.resolve();
         val visitor = new SimpleExprVisitor2<BiFunction<T,EvalCtx,Object>,Void>() {
             @Override
@@ -111,8 +112,7 @@ public class TableGenericQueryService<T> extends AbstractDbService {
 
             @Override
             public BiFunction<T, EvalCtx, Object> caseGroupAccumulator(SimpleExpr.GroupAccumulatorExpr expr, Void unused) {
-                throw new UnsupportedOperationException("NOT IMPLEMENTED YET");
-//                return null;
+                throw new IllegalStateException("analytical columns should be handled separately..");
             }
 
             @Override
@@ -125,51 +125,7 @@ public class TableGenericQueryService<T> extends AbstractDbService {
                         case "+": case "-": case "*": case "/":
                         case "<": case "<=": case ">": case ">=":
                         // coerce types, example: "int", "long" -> "long", "long"
-                        SimpleBinaryOperator simpleOp = SimpleBinaryOperators.forName(expr.op);
-                        opFunction = (left,right) -> {
-                            if (left == null || right == null) {
-                                return null; // should not occur?
-                            }
-                            if (left instanceof Integer) { // TODO type could be resolved once at "prepare"(=compile) time
-                                int l = (Integer) left;
-                                if (right instanceof Integer) {
-                                    int r = (Integer) right;
-                                    return simpleOp.evalInt(l, r);
-                                } else if (right instanceof Long) {
-                                    long  r = (Long) right;
-                                    return simpleOp.evalLong((long) l, r);
-                                } else if (right instanceof Double) {
-                                    double r = (Double) right;
-                                    return simpleOp.evalDouble((double) l, r);
-                                } else {
-                                    throw new UnsupportedOperationException();
-                                }
-                            } else if (left instanceof Long) {
-                                long l = (Long) left;
-                                if (right instanceof Integer) {
-                                    int r = (Integer) right;
-                                    return simpleOp.evalLong(l, (long) r);
-                                } else if (right instanceof Long) {
-                                    long r = (Long) right;
-                                    return simpleOp.evalLong(l, r);
-                                } else if (right instanceof Double) {
-                                    double r = (Double) right;
-                                    return simpleOp.evalDouble((double) l, r);
-                                } else {
-                                    throw new UnsupportedOperationException();
-                                }
-                            } else if (left instanceof String) {
-                                String l = (String) left;
-                                if (right instanceof String) {
-                                    String r = (String) right;
-                                    return simpleOp.evalString(l, r);
-                                } else {
-                                    throw new UnsupportedOperationException();
-                                }
-                            } else {
-                                throw new UnsupportedOperationException();
-                            }
-                        };
+                        opFunction = stdArithBinaryOpExprToEvalFunction(expr);
                         break;
                     case "like": case "~":
                         opFunction = (BiFunction) likeExprToEvalFunction(expr);
@@ -184,8 +140,97 @@ public class TableGenericQueryService<T> extends AbstractDbService {
                     return opFunction.apply(left, right);
                 };
             }
+
+            @Override
+            public BiFunction<T, EvalCtx, Object> caseUnaryOp(SimpleExpr.UnaryOpExpr expr, Void param) {
+                BiFunction<T, EvalCtx, Object> underlyingEvalFunc = expr.expr.accept(this, param);
+                Function<Object,Object> opFunction = switch(expr.op) {
+                    case "-" -> negativeOpExprToEvalFunction(expr);
+                    case "not" -> notOpExprToEvalFunction(expr);
+                    default -> throw new IllegalArgumentException("unrecognized op '" + expr.op + "'");
+                };
+                return (obj,ctx) -> {
+                    val underlyingValue = underlyingEvalFunc.apply(obj, ctx);
+                    return opFunction.apply(underlyingValue);
+                };
+            }
+
+            @Override
+            public BiFunction<T, EvalCtx, Object> caseApplyFunc(SimpleExpr.ApplyFuncExpr expr, Void param) {
+                Function<List<Object>,Object> evalFunction = switch(expr.function) {
+                    case "struct" -> ((ls) -> ls);
+                    // TOADD "min", "max", "
+                    default -> throw new IllegalArgumentException("unrecognized function '" + expr.function + "'");
+                };
+                List<BiFunction<T, EvalCtx, Object>> argEvalFuncs = new ArrayList<>();
+                for(val argExpr: expr.args) {
+                    val argEvalFunc = argExpr.accept(this, param);
+                    argEvalFuncs.add(argEvalFunc);
+                }
+                return (obj,ctx) -> {
+                    List<Object> argValues = new ArrayList<>();
+                    for(val argEvalFunc : argEvalFuncs) {
+                        Object argValue = argEvalFunc.apply(obj, ctx);
+                        argValues.add(argValue);
+                    }
+                    return evalFunction.apply(argValues);
+                };
+            }
+
         };
         return expr.accept(visitor, null);
+    }
+
+
+    @NotNull
+    private static BiFunction<Object, Object, Object> stdArithBinaryOpExprToEvalFunction(SimpleExpr.BinaryOpExpr expr) {
+        BiFunction<Object, Object, Object> opFunction;
+        SimpleBinaryOperator simpleOp = SimpleBinaryOperators.forName(expr.op);
+        opFunction = (left,right) -> {
+            if (left == null || right == null) {
+                return null; // should not occur?
+            }
+            if (left instanceof Integer) { // TODO type could be resolved once at "prepare"(=compile) time
+                int l = (Integer) left;
+                if (right instanceof Integer) {
+                    int r = (Integer) right;
+                    return simpleOp.evalInt(l, r);
+                } else if (right instanceof Long) {
+                    long  r = (Long) right;
+                    return simpleOp.evalLong((long) l, r);
+                } else if (right instanceof Double) {
+                    double r = (Double) right;
+                    return simpleOp.evalDouble((double) l, r);
+                } else {
+                    throw new UnsupportedOperationException();
+                }
+            } else if (left instanceof Long) {
+                long l = (Long) left;
+                if (right instanceof Integer) {
+                    int r = (Integer) right;
+                    return simpleOp.evalLong(l, (long) r);
+                } else if (right instanceof Long) {
+                    long r = (Long) right;
+                    return simpleOp.evalLong(l, r);
+                } else if (right instanceof Double) {
+                    double r = (Double) right;
+                    return simpleOp.evalDouble((double) l, r);
+                } else {
+                    throw new UnsupportedOperationException();
+                }
+            } else if (left instanceof String) {
+                String l = (String) left;
+                if (right instanceof String) {
+                    String r = (String) right;
+                    return simpleOp.evalString(l, r);
+                } else {
+                    throw new UnsupportedOperationException();
+                }
+            } else {
+                throw new UnsupportedOperationException();
+            }
+        };
+        return opFunction;
     }
 
     @NotNull
@@ -252,5 +297,40 @@ public class TableGenericQueryService<T> extends AbstractDbService {
         return opFunction;
     }
 
+    private Function<Object, Object> negativeOpExprToEvalFunction(SimpleExpr.UnaryOpExpr expr) {
+        return (value) -> {
+            if (value == null) {
+                return null;
+            } else if (value instanceof Integer) {
+                boolean v = (Boolean) value;
+                return ! v;
+            } else if (value instanceof Long) {
+                long v = (Long) value;
+                return - v;
+            } else if (value instanceof Float) {
+                Float v = (Float) value;
+                return - v;
+            } else if (value instanceof Double) {
+                Double v = (Double) value;
+                return - v;
+            } else {
+                return null; // should not occur
+            }
+        };
+    }
+
+
+    private Function<Object, Object> notOpExprToEvalFunction(SimpleExpr.UnaryOpExpr expr) {
+        return (value) -> {
+            if (value == null) {
+                return null;
+            } else if (value instanceof Boolean) {
+                Boolean boolValue = (Boolean) value;
+                return ! boolValue;
+            } else {
+                return null; // should not occur
+            }
+        };
+    }
 
 }

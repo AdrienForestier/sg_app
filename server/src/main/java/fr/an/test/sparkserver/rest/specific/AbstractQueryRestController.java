@@ -5,6 +5,7 @@ import fr.an.test.sparkserver.impl.TableGenericQueryService;
 import fr.an.test.sparkserver.impl.specific.SalesQueryService;
 import fr.an.test.sparkserver.rest.AbstractRestController;
 import fr.an.test.sparkserver.rest.dto.QueryRequestDTO;
+import fr.an.test.sparkserver.rest.dto.QuerySimpleTableColumnsParamsDTO;
 import fr.an.test.sparkserver.rest.dto.generic.RowDTO;
 import fr.an.test.sparkserver.rest.dto.generic.TableInfoDTO;
 import fr.an.test.sparkserver.rest.dto.specific.SalesDTO;
@@ -47,8 +48,8 @@ public abstract class AbstractQueryRestController<T> extends AbstractRestControl
 
     @PutMapping("/query-generic")
     @Operation(summary = "query")
-    public List<RowDTO> query(@RequestBody QueryRequestDTO req) {
-        return queryService.query(req);
+    public List<RowDTO> query(@RequestBody QuerySimpleTableColumnsParamsDTO req) {
+        return queryService.querySimpleCols(req);
     }
 
 }

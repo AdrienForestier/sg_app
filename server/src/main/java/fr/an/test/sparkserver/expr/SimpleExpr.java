@@ -2,6 +2,8 @@ package fr.an.test.sparkserver.expr;
 
 import lombok.AllArgsConstructor;
 
+import java.util.List;
+
 public abstract class SimpleExpr {
 
     // TOADD
@@ -96,6 +98,40 @@ public abstract class SimpleExpr {
         @Override
         public <TRes,TParam> TRes accept(SimpleExprVisitor2<TRes,TParam> visitor, TParam param) {
             return visitor.caseBinaryOp(this, param);
+        }
+
+    }
+
+    @AllArgsConstructor
+    public static class UnaryOpExpr extends SimpleExpr {
+        public String op;
+        public SimpleExpr expr;
+
+        @Override
+        public void accept(SimpleExprVisitor visitor) {
+            visitor.caseUnaryOp(this);
+        }
+
+        @Override
+        public <TRes,TParam> TRes accept(SimpleExprVisitor2<TRes,TParam> visitor, TParam param) {
+            return visitor.caseUnaryOp(this, param);
+        }
+
+    }
+
+    @AllArgsConstructor
+    public static class ApplyFuncExpr extends SimpleExpr {
+        public String function;
+        public List<SimpleExpr> args;
+
+        @Override
+        public void accept(SimpleExprVisitor visitor) {
+            visitor.caseApplyFunc(this);
+        }
+
+        @Override
+        public <TRes,TParam> TRes accept(SimpleExprVisitor2<TRes,TParam> visitor, TParam param) {
+            return visitor.caseApplyFunc(this, param);
         }
 
     }

@@ -3,6 +3,7 @@ package fr.an.test.sparkserver.rest;
 import fr.an.test.sparkserver.impl.DbMetadata;
 import fr.an.test.sparkserver.impl.DispatchGenericQueryService;
 import fr.an.test.sparkserver.rest.dto.QueryRequestDTO;
+import fr.an.test.sparkserver.rest.dto.QuerySimpleTableColumnsParamsDTO;
 import fr.an.test.sparkserver.rest.dto.generic.DatabaseInfoDTO;
 import fr.an.test.sparkserver.rest.dto.generic.RowDTO;
 import fr.an.test.sparkserver.rest.dto.generic.TableInfoDTO;
@@ -49,12 +50,12 @@ public class DispatchGenericQueryRestController extends AbstractRestController {
         return delegate.dispatchFindFirstDtos(tableName, limit);
     }
 
-    @PutMapping("/query-generic")
-    @Operation(summary = "query")
+    @PutMapping("/query-simple-cols")
+    @Operation(summary = "query simple columns")
     public List<RowDTO> query(
             @PathVariable("tableName") String tableName,
-            @RequestBody QueryRequestDTO req) {
-        return delegate.dispatchQuery(tableName, req);
+            @RequestBody QuerySimpleTableColumnsParamsDTO req) {
+        return delegate.dispatchQuerySimpleCols(tableName, req);
     }
 
 }

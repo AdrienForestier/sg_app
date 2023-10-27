@@ -1,5 +1,6 @@
 package fr.an.test.sparkserver.impl;
 
+import lombok.val;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 
@@ -30,7 +31,8 @@ public record AppDatasets(
             case "Sales":
                 return salesDs;
             default:
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("dataset not found by name '" + name + "'"
+                        + ", expecting one of {User,Event,Category,Date,Venue,Listing,Sales}");
         }
     }
 
