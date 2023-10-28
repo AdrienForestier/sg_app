@@ -1,8 +1,8 @@
 package fr.an.test.sparkserver.sql.analysis;
 
-import fr.an.test.sparkserver.rest.dto.QueryRequestDTO;
-import fr.an.test.sparkserver.rest.dto.expr.ParseQueryRequestDTO;
-import fr.an.test.sparkserver.rest.dto.expr.ParseQueryResponseDTO;
+import fr.an.exprlib.dto.QueryRequestDTO;
+import fr.an.exprlib.dto.expr.ParseQueryRequestDTO;
+import fr.an.exprlib.dto.expr.ParseQueryResponseDTO;
 import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.catalyst.expressions.Expression;
 import org.apache.spark.sql.catalyst.parser.ParseException;

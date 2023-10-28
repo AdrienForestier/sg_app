@@ -1,9 +1,9 @@
 package fr.an.test.sparkserver.rest;
 
+import fr.an.exprlib.dto.expr.ParseQueryRequestDTO;
+import fr.an.exprlib.dto.expr.ParseQueryResponseDTO;
+import fr.an.exprlib.dto.metadata.DatabaseInfoDTO;
 import fr.an.test.sparkserver.appdata.AppDbMetadata;
-import fr.an.test.sparkserver.rest.dto.expr.ParseQueryRequestDTO;
-import fr.an.test.sparkserver.rest.dto.expr.ParseQueryResponseDTO;
-import fr.an.test.sparkserver.rest.dto.metadata.DatabaseInfoDTO;
 import fr.an.test.sparkserver.sql.analysis.SqlExprParserService;
 import org.springframework.web.bind.annotation.*;
 

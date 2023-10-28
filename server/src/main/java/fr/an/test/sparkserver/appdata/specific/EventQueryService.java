@@ -1,9 +1,9 @@
 package fr.an.test.sparkserver.appdata.specific;
 
+import fr.an.exprlib.dto.specific.EventDTO;
 import fr.an.test.sparkserver.appdata.AppDatasets;
 import fr.an.test.sparkserver.appdata.AppDbMetadata;
-import fr.an.test.sparkserver.sql.eval.TableGenericQueryService;
-import fr.an.test.sparkserver.rest.dto.specific.EventDTO;
+import fr.an.test.sparkserver.sql.TableGenericQueryService;
 import org.springframework.stereotype.Service;
 
 @Service

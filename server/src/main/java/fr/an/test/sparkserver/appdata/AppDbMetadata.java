@@ -1,11 +1,11 @@
 package fr.an.test.sparkserver.appdata;
 
-import fr.an.test.sparkserver.metadata.DatabaseInfo;
-import fr.an.test.sparkserver.metadata.TableInfo;
-import fr.an.test.sparkserver.metadata.TableInfoBuilder;
-import fr.an.test.sparkserver.rest.dto.specific.*;
 
-import java.time.LocalDate;
+import fr.an.exprlib.dto.specific.*;
+import fr.an.exprlib.metadata.DatabaseInfo;
+import fr.an.exprlib.metadata.TableInfo;
+import fr.an.exprlib.metadata.TableInfoBuilder;
+
 import java.util.Arrays;
 
 public class AppDbMetadata {

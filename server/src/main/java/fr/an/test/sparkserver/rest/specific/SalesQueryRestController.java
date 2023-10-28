@@ -1,9 +1,10 @@
 package fr.an.test.sparkserver.rest.specific;
 
+import fr.an.exprlib.dto.specific.SalesDTO;
 import fr.an.test.sparkserver.appdata.specific.SalesQueryService;
-import fr.an.test.sparkserver.rest.dto.specific.SalesDTO;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(path="/api/specific/sales")

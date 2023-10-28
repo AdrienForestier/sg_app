@@ -1,11 +1,11 @@
 package fr.an.test.sparkserver.appdata;
 
 import com.google.common.collect.ImmutableMap;
+import fr.an.exprlib.dto.QuerySimpleTableColumnsParamsDTO;
+import fr.an.exprlib.dto.metadata.RowDTO;
+import fr.an.exprlib.dto.metadata.TableInfoDTO;
 import fr.an.test.sparkserver.appdata.specific.*;
-import fr.an.test.sparkserver.rest.dto.QuerySimpleTableColumnsParamsDTO;
-import fr.an.test.sparkserver.rest.dto.metadata.RowDTO;
-import fr.an.test.sparkserver.rest.dto.metadata.TableInfoDTO;
-import fr.an.test.sparkserver.sql.eval.TableGenericQueryService;
+import fr.an.test.sparkserver.sql.TableGenericQueryService;
 import lombok.val;
 import org.springframework.stereotype.Service;
 

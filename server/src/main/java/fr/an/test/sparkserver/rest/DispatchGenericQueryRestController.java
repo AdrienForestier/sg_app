@@ -1,9 +1,9 @@
 package fr.an.test.sparkserver.rest;
 
+import fr.an.exprlib.dto.QuerySimpleTableColumnsParamsDTO;
+import fr.an.exprlib.dto.metadata.RowDTO;
+import fr.an.exprlib.dto.metadata.TableInfoDTO;
 import fr.an.test.sparkserver.appdata.AppDispatchGenericQueryService;
-import fr.an.test.sparkserver.rest.dto.QuerySimpleTableColumnsParamsDTO;
-import fr.an.test.sparkserver.rest.dto.metadata.RowDTO;
-import fr.an.test.sparkserver.rest.dto.metadata.TableInfoDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.web.bind.annotation.*;
 
