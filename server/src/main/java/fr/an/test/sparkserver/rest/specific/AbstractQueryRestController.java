@@ -1,16 +1,12 @@
 
 package fr.an.test.sparkserver.rest.specific;
 
-import fr.an.test.sparkserver.impl.TableGenericQueryService;
-import fr.an.test.sparkserver.impl.specific.SalesQueryService;
+import fr.an.test.sparkserver.sql.eval.TableGenericQueryService;
 import fr.an.test.sparkserver.rest.AbstractRestController;
-import fr.an.test.sparkserver.rest.dto.QueryRequestDTO;
 import fr.an.test.sparkserver.rest.dto.QuerySimpleTableColumnsParamsDTO;
-import fr.an.test.sparkserver.rest.dto.generic.RowDTO;
-import fr.an.test.sparkserver.rest.dto.generic.TableInfoDTO;
-import fr.an.test.sparkserver.rest.dto.specific.SalesDTO;
+import fr.an.test.sparkserver.rest.dto.metadata.RowDTO;
+import fr.an.test.sparkserver.rest.dto.metadata.TableInfoDTO;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

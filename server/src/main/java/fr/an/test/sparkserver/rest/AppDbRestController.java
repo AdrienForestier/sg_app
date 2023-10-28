@@ -1,10 +1,10 @@
 package fr.an.test.sparkserver.rest;
 
-import fr.an.test.sparkserver.impl.DbMetadata;
-import fr.an.test.sparkserver.rest.dto.expr.ParseRequestDTO;
-import fr.an.test.sparkserver.rest.dto.expr.ParseResponseDTO;
-import fr.an.test.sparkserver.rest.dto.generic.DatabaseInfoDTO;
-import fr.an.test.sparkserver.sqlexpr.SqlExprParserService;
+import fr.an.test.sparkserver.appdata.AppDbMetadata;
+import fr.an.test.sparkserver.rest.dto.expr.ParseQueryRequestDTO;
+import fr.an.test.sparkserver.rest.dto.expr.ParseQueryResponseDTO;
+import fr.an.test.sparkserver.rest.dto.metadata.DatabaseInfoDTO;
+import fr.an.test.sparkserver.sql.analysis.SqlExprParserService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -25,12 +25,12 @@ public class AppDbRestController extends AbstractRestController {
 
     @GetMapping(path="/info")
     public DatabaseInfoDTO getDatabaseInfo() {
-        return DbMetadata.DB.toDTO();
+        return AppDbMetadata.DB.toDTO();
     }
 
-    @PostMapping(path="test-parse-expr")
-    public ParseResponseDTO parseExprRequest(@RequestBody ParseRequestDTO req) {
-        return sqlExprService.parseExprRequest(req);
+    @PostMapping(path="/test-parse-query")
+    public ParseQueryResponseDTO parseQueryRequest(@RequestBody ParseQueryRequestDTO req) {
+        return sqlExprService.parseQueryRequest(req);
     }
 
 }

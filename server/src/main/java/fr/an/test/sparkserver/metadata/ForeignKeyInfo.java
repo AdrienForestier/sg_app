@@ -1,7 +1,7 @@
 package fr.an.test.sparkserver.metadata;
 
 import com.google.common.collect.ImmutableList;
-import fr.an.test.sparkserver.rest.dto.generic.ForeignKeyInfoDTO;
+import fr.an.test.sparkserver.rest.dto.metadata.ForeignKeyInfoDTO;
 import lombok.Value;
 
 @Value

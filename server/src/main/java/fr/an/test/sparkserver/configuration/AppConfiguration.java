@@ -1,6 +1,6 @@
 package fr.an.test.sparkserver.configuration;
 
-import fr.an.test.sparkserver.impl.AppDatasets;
+import fr.an.test.sparkserver.appdata.AppDatasets;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;

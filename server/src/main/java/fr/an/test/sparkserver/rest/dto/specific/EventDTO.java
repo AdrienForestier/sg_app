@@ -3,6 +3,7 @@ package fr.an.test.sparkserver.rest.dto.specific;
 import lombok.Data;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Data
 public class EventDTO {
@@ -16,6 +17,6 @@ public class EventDTO {
 
     // other columns
     String eventName;
-    Instant startTime;
+    LocalDateTime startTime;
 
 }

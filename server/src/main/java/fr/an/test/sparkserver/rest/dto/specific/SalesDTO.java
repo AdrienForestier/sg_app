@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.joda.time.DateTime;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor @AllArgsConstructor
 @Getter @Setter
@@ -22,6 +23,6 @@ public class SalesDTO {
     public int qtySold;
     public double pricePaid;
     public double commission;
-    public Instant saleTime;
+    public LocalDateTime saleTime;
 
 }

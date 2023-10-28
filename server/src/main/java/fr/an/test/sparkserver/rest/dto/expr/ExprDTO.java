@@ -1,11 +1,14 @@
 package fr.an.test.sparkserver.rest.dto.expr;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import lombok.AllArgsConstructor;
 import scala.annotation.meta.param;
 
 import java.util.List;
 
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = As.PROPERTY, property = "type")
 @JsonSubTypes(value= {
     @JsonSubTypes.Type(value = ExprDTO.LiteralExprDTO.class),
     @JsonSubTypes.Type(value = ExprDTO.FieldAccessExprDTO.class),

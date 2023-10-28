@@ -1,6 +1,7 @@
 package fr.an.test.sparkserver.metadata;
 
-import lombok.val;
+import com.google.common.collect.ImmutableList;
+import fr.an.test.sparkserver.metadata.types.StructTypeInfoBuilder;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,23 +16,23 @@ public class TableInfoBuilder<T> {
     public final String name;
     public final Class<T> objectClass;
 
-    public final Consumer<ColInfosBuilder<T>> colBuilderFunction;
+    public final Consumer<StructTypeInfoBuilder<T>> schemaBuilderFunction;
 
-    public final List<String> pkColumns;
+    public final ImmutableList<String> pkColumns;
 
     public final Consumer<ForeignKeyInfosBuilder<T>> fkBuilderFunction;
 
     //---------------------------------------------------------------------------------------------
 
     public TableInfoBuilder(String name, Class<T> objectClass,
-                            Consumer<ColInfosBuilder<T>> colBuilderFunction,
+                            Consumer<StructTypeInfoBuilder<T>> schemaBuilderFunction,
                             String pkColumnsCommaSeparated,
                             Consumer<ForeignKeyInfosBuilder<T>> fkBuilderFunction
     ) {
         this.name = name;
         this.objectClass = objectClass;
-        this.colBuilderFunction = colBuilderFunction;
-        this.pkColumns = Collections.unmodifiableList(Arrays.asList(pkColumnsCommaSeparated.split(",")));
+        this.schemaBuilderFunction = schemaBuilderFunction;
+        this.pkColumns = ImmutableList.copyOf(pkColumnsCommaSeparated.split(","));
         this.fkBuilderFunction = fkBuilderFunction;
     }
 

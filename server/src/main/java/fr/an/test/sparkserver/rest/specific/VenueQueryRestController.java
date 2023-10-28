@@ -1,8 +1,6 @@
 package fr.an.test.sparkserver.rest.specific;
 
-import fr.an.test.sparkserver.impl.specific.SalesQueryService;
-import fr.an.test.sparkserver.impl.specific.VenueQueryService;
-import fr.an.test.sparkserver.rest.dto.specific.SalesDTO;
+import fr.an.test.sparkserver.appdata.specific.VenueQueryService;
 import fr.an.test.sparkserver.rest.dto.specific.VenueDTO;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -3,7 +3,7 @@ package fr.an.test.sparkserver.metadata;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import fr.an.test.sparkserver.rest.dto.generic.DatabaseInfoDTO;
+import fr.an.test.sparkserver.rest.dto.metadata.DatabaseInfoDTO;
 import fr.an.test.sparkserver.utils.LsUtils;
 
 import java.util.Collection;

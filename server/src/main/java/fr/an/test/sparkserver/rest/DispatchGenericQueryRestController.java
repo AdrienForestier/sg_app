@@ -1,12 +1,9 @@
 package fr.an.test.sparkserver.rest;
 
-import fr.an.test.sparkserver.impl.DbMetadata;
-import fr.an.test.sparkserver.impl.DispatchGenericQueryService;
-import fr.an.test.sparkserver.rest.dto.QueryRequestDTO;
+import fr.an.test.sparkserver.appdata.AppDispatchGenericQueryService;
 import fr.an.test.sparkserver.rest.dto.QuerySimpleTableColumnsParamsDTO;
-import fr.an.test.sparkserver.rest.dto.generic.DatabaseInfoDTO;
-import fr.an.test.sparkserver.rest.dto.generic.RowDTO;
-import fr.an.test.sparkserver.rest.dto.generic.TableInfoDTO;
+import fr.an.test.sparkserver.rest.dto.metadata.RowDTO;
+import fr.an.test.sparkserver.rest.dto.metadata.TableInfoDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,11 +14,11 @@ import java.util.List;
         produces = "application/json")
 public class DispatchGenericQueryRestController extends AbstractRestController {
 
-    private final DispatchGenericQueryService delegate;
+    private final AppDispatchGenericQueryService delegate;
 
     //---------------------------------------------------------------------------------------------
 
-    protected DispatchGenericQueryRestController(DispatchGenericQueryService delegate) {
+    protected DispatchGenericQueryRestController(AppDispatchGenericQueryService delegate) {
         super("/api/dispatch-table/${tableName}");
         this.delegate = delegate;
     }

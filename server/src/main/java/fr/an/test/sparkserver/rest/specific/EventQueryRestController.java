@@ -1,8 +1,6 @@
 package fr.an.test.sparkserver.rest.specific;
 
-import fr.an.test.sparkserver.impl.specific.CategoryQueryService;
-import fr.an.test.sparkserver.impl.specific.EventQueryService;
-import fr.an.test.sparkserver.rest.dto.specific.CategoryDTO;
+import fr.an.test.sparkserver.appdata.specific.EventQueryService;
 import fr.an.test.sparkserver.rest.dto.specific.EventDTO;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.RequestMapping;
