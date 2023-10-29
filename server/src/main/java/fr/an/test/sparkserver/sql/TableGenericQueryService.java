@@ -56,17 +56,15 @@ public class TableGenericQueryService<T> {
     }
 
     public List<RowDTO> querySimpleCols(List<String> selectCols, int limitCount) {
-        List<Function<T,?>> dtoGetters = LsUtils.map(selectCols, col -> tableInfo.resolve(col));
+        List<Function<T,?>> dtoColGetters = LsUtils.map(selectCols, col -> tableInfo.resolveObjectEvalFunc(col));
         Dataset<Row> ds = tableDataset;
         if (limitCount != 0) {
             ds = ds.limit(limitCount);
         }
         // can not call Dataset.map() .. java.io.NotSerializableException
         val dtos = toDtos(ds);
-        return LsUtils.map(dtos, dto -> new RowDTO(ExprEvalUtils.applyObjectGetters(dto, dtoGetters)));
+        return LsUtils.map(dtos, dto -> new RowDTO(ExprEvalUtils.applyObjectFunctions(dto, dtoColGetters)));
     }
-
-    //---------------------------------------------------------------------------------------------
 
 
 }

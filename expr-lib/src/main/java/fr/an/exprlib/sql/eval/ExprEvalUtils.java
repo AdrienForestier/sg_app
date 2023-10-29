@@ -8,13 +8,14 @@ import java.util.function.Function;
 
 public class ExprEvalUtils {
 
-    public static <T> Object[] applyObjectGetters(
+    public static <T> Object[] applyObjectFunctions(
             T obj,
-            List<? extends Function<T,?>> getters) {
-        int len = getters.size();
+            List<? extends Function<T,?>> evalFuncs) {
+        int len = evalFuncs.size();
         Object[] res = new Object[len];
         for(int i = 0; i < len; i++) {
-            res[i] = getters.get(i).apply(obj);
+            Function<T,?> func = evalFuncs.get(i);
+            res[i] = func.apply(obj);
         }
         return res;
     }

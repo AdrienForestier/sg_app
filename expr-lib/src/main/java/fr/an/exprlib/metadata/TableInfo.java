@@ -39,7 +39,7 @@ public class TableInfo<T> {
         return new TableInfoDTO(name, schema.toDTO(), pkColumns, LsUtils.map(foreignKeyInfos, x -> x.toDTO()));
     }
 
-    public Function<T,?> resolve(String expr) {
+    public Function<T,?> resolveObjectEvalFunc(String expr) {
         val field = schema.nameToField.get(expr);
         if (field == null) {
             throw new IllegalArgumentException("field not found by name : '" + expr + "' (and extended expression not supported yet)");

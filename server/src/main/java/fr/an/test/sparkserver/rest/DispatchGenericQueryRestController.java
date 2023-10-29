@@ -36,7 +36,8 @@ public class DispatchGenericQueryRestController extends AbstractRestController {
     @Operation(summary = "list all")
     public List<Object> list(
             @PathVariable("tableName") String tableName) {
-        return delegate.dispatchFindAllDtos(tableName);
+        return withLog("GET", "", "",
+                () -> delegate.dispatchFindAllDtos(tableName));
     }
 
     @GetMapping("/first")
@@ -44,7 +45,8 @@ public class DispatchGenericQueryRestController extends AbstractRestController {
     public List<Object> first(
             @PathVariable("tableName") String tableName,
             @RequestParam(name="limit", defaultValue = "20") int limit) {
-        return delegate.dispatchFindFirstDtos(tableName, limit);
+        return withLog("GET", "/first", "limit:" + limit,
+                () -> delegate.dispatchFindFirstDtos(tableName, limit));
     }
 
     @PutMapping("/query-simple-cols")
@@ -52,7 +54,8 @@ public class DispatchGenericQueryRestController extends AbstractRestController {
     public List<RowDTO> query(
             @PathVariable("tableName") String tableName,
             @RequestBody QuerySimpleTableColumnsParamsDTO req) {
-        return delegate.dispatchQuerySimpleCols(tableName, req);
+        return withLog("PUT", "/query-simple-cols", "tableName:" + tableName + " req:" + req,
+                () -> delegate.dispatchQuerySimpleCols(tableName, req));
     }
 
 }

@@ -1,4 +1,4 @@
-package fr.an.exprlib.sql.expr;
+package fr.an.exprlib.sql.eval.ops;
 
 public enum EnumBinaryOperator {
     PLUS, MINUS, MULTIPLY, DIVIDE, MODULO,

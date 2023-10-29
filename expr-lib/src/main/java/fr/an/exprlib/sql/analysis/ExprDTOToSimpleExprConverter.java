@@ -33,7 +33,7 @@ public class ExprDTOToSimpleExprConverter {
             if (expr.intValue != null) {
                 return new SimpleExpr.LiteralExpr(expr.intValue);
             }else if (expr.doubleValue != null) {
-                return new SimpleExpr.LiteralExpr(expr.intValue);
+                return new SimpleExpr.LiteralExpr(expr.doubleValue);
             } else if (expr.strValue != null) {
                 return new SimpleExpr.LiteralExpr(expr.strValue);
             } else {

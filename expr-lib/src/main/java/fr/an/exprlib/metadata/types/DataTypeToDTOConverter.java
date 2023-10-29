@@ -76,7 +76,7 @@ public class DataTypeToDTOConverter {
         }
 
         @Override
-        public void caseLocalDate(DateTypeInfo p) {
+        public void caseDate(DateTypeInfo p) {
             this.res = new DateTypeDTO();
         }
 

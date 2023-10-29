@@ -7,9 +7,9 @@ public abstract class DataTypeInfoVisitor {
 
     public abstract void caseStruct(StructTypeInfo<?> p);
 
-    public abstract void caseMap(MapTypeInfo p);
+    public abstract void caseMap(MapTypeInfo<?,?> p);
 
-    public abstract void caseArray(ArrayTypeInfo p);
+    public abstract void caseArray(ArrayTypeInfo<?> p);
 
     public abstract void caseBinary(BinaryTypeInfo p);
 
@@ -18,7 +18,7 @@ public abstract class DataTypeInfoVisitor {
     public abstract void caseChar(CharTypeInfo p);
     public abstract void caseString(StringTypeInfo p);
 
-    public abstract void caseLocalDate(DateTypeInfo p);
+    public abstract void caseDate(DateTypeInfo p);
     public abstract void caseDateTime(DateTimeTypeInfo p);
 
     public abstract void caseByte(ByteTypeInfo p);

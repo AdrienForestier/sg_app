@@ -1,19 +1,21 @@
 package fr.an.exprlib.sql.expr;
 
+import fr.an.exprlib.sql.expr.SimpleExpr.*;
+
 public abstract class SimpleExprVisitor {
 
-    public abstract void caseLiteral(SimpleExpr.LiteralExpr expr);
+    public abstract void caseLiteral(LiteralExpr expr);
 
-    public abstract void caseFieldAccess(SimpleExpr.FieldAccessExpr expr);
+    public abstract void caseNamed(NamedSimpleExpr expr);
 
-    public abstract void caseRefByIdLookup(SimpleExpr.RefByIdLookupExpr expr);
+    public abstract void caseFieldAccess(FieldAccessExpr expr);
 
-    public abstract void caseGroupAccumulator(SimpleExpr.GroupAccumulatorExpr expr);
+    public abstract void caseRefByIdLookup(RefByIdLookupExpr expr);
 
-    public abstract void caseBinaryOp(SimpleExpr.BinaryOpExpr expr);
+    public abstract void caseBinaryOp(BinaryOpExpr expr);
 
-    public abstract void caseUnaryOp(SimpleExpr.UnaryOpExpr expr);
+    public abstract void caseUnaryOp(UnaryOpExpr expr);
 
-    public abstract void caseApplyFunc(SimpleExpr.ApplyFuncExpr expr);
+    public abstract void caseApplyFunc(ApplyFuncExpr expr);
 
 }

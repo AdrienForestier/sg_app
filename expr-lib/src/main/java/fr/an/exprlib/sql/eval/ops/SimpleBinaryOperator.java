@@ -1,4 +1,4 @@
-package fr.an.exprlib.sql.expr;
+package fr.an.exprlib.sql.eval.ops;
 
 public abstract class SimpleBinaryOperator {
     public final EnumBinaryOperator op;

@@ -8,6 +8,7 @@ import fr.an.exprlib.dto.metadata.types.DataTypeDTO.StructTypeDTO;
 import fr.an.exprlib.metadata.types.StructTypeInfoBuilder.StructFieldInfoBuilder;
 import fr.an.exprlib.utils.LsUtils;
 import lombok.AllArgsConstructor;
+import lombok.val;
 
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -24,6 +25,25 @@ public abstract class DataTypeInfo<T> {
     public final Class<T> javaClass;
 
     public abstract void accept(DataTypeInfoVisitor visitor);
+    public abstract <TRes,TParam> TRes accept2(DataTypeInfoVisitor2<TRes,TParam> visitor, TParam param);
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (!(obj instanceof DataTypeInfo)) {
+            return false;
+        }
+        return equalsType((DataTypeInfo<?>) obj);
+    }
+
+    protected abstract boolean equalsType(DataTypeInfo<?> other);
+
+    @Override
+    public String toString() {
+        return toSqlString();
+    }
+
+    protected abstract String toSqlString();
 
     //---------------------------------------------------------------------------------------------
 
@@ -37,6 +57,20 @@ public abstract class DataTypeInfo<T> {
         @Override
         public void accept(DataTypeInfoVisitor visitor) {
             visitor.caseNull(this);
+        }
+        @Override
+        public <TRes,TParam> TRes accept2(DataTypeInfoVisitor2<TRes,TParam> visitor, TParam param) {
+            return visitor.caseNull(this, param);
+        }
+
+        @Override
+        protected boolean equalsType(DataTypeInfo<?> obj) {
+            return obj instanceof NullDataTypeInfo;
+        }
+
+        @Override
+        protected String toSqlString() {
+            return "any"; // not real sql
         }
     }
 
@@ -52,12 +86,26 @@ public abstract class DataTypeInfo<T> {
     }
 
     /** type for Array[byte] */
-    public static class BinaryTypeInfo extends AtomicTypeInfo {
+    public static class BinaryTypeInfo extends AtomicTypeInfo<byte[]> {
         public static final BinaryTypeInfo INSTANCE = new BinaryTypeInfo();
         private BinaryTypeInfo() { super(byte[].class, null); }
         @Override
         public void accept(DataTypeInfoVisitor visitor) {
             visitor.caseBinary(this);
+        }
+        @Override
+        public <TRes,TParam> TRes accept2(DataTypeInfoVisitor2<TRes,TParam> visitor, TParam param) {
+            return visitor.caseBinary(this, param);
+        }
+
+        @Override
+        protected boolean equalsType(DataTypeInfo<?> obj) {
+            return obj instanceof BinaryTypeInfo;
+        }
+
+        @Override
+        protected String toSqlString() {
+            return "binary";
         }
     }
 
@@ -69,6 +117,20 @@ public abstract class DataTypeInfo<T> {
         public void accept(DataTypeInfoVisitor visitor) {
             visitor.caseBoolean(this);
         }
+        @Override
+        public <TRes,TParam> TRes accept2(DataTypeInfoVisitor2<TRes,TParam> visitor, TParam param) {
+            return visitor.caseBoolean(this, param);
+        }
+
+        @Override
+        protected boolean equalsType(DataTypeInfo<?> obj) {
+            return obj instanceof BooleanTypeInfo;
+        }
+
+        @Override
+        protected String toSqlString() {
+            return "bool";
+        }
     }
 
     /** type for Char */
@@ -78,6 +140,19 @@ public abstract class DataTypeInfo<T> {
         @Override
         public void accept(DataTypeInfoVisitor visitor) {
             visitor.caseChar(this);
+        }
+        @Override
+        public <TRes,TParam> TRes accept2(DataTypeInfoVisitor2<TRes,TParam> visitor, TParam param) {
+            return visitor.caseChar(this, param);
+        }
+
+        @Override
+        protected boolean equalsType(DataTypeInfo<?> obj) {
+            return obj instanceof CharTypeInfo;
+        }
+        @Override
+        protected String toSqlString() {
+            return "char";
         }
     }
 
@@ -89,6 +164,19 @@ public abstract class DataTypeInfo<T> {
         public void accept(DataTypeInfoVisitor visitor) {
             visitor.caseString(this);
         }
+        @Override
+        public <TRes,TParam> TRes accept2(DataTypeInfoVisitor2<TRes,TParam> visitor, TParam param) {
+            return visitor.caseString(this, param);
+        }
+
+        @Override
+        protected boolean equalsType(DataTypeInfo<?> obj) {
+            return obj instanceof StringTypeInfo;
+        }
+        @Override
+        protected String toSqlString() {
+            return "string";
+        }
     }
 
     /** type for Date */
@@ -97,7 +185,20 @@ public abstract class DataTypeInfo<T> {
         private DateTypeInfo() { super(java.time.LocalDate.class, null); }
         @Override
         public void accept(DataTypeInfoVisitor visitor) {
-            visitor.caseLocalDate(this);
+            visitor.caseDate(this);
+        }
+        @Override
+        public <TRes,TParam> TRes accept2(DataTypeInfoVisitor2<TRes,TParam> visitor, TParam param) {
+            return visitor.caseDate(this, param);
+        }
+
+        @Override
+        protected boolean equalsType(DataTypeInfo<?> obj) {
+            return obj instanceof DateTypeInfo;
+        }
+        @Override
+        protected String toSqlString() {
+            return "date";
         }
     }
 
@@ -108,6 +209,19 @@ public abstract class DataTypeInfo<T> {
         @Override
         public void accept(DataTypeInfoVisitor visitor) {
             visitor.caseDateTime(this);
+        }
+        @Override
+        public <TRes,TParam> TRes accept2(DataTypeInfoVisitor2<TRes,TParam> visitor, TParam param) {
+            return visitor.caseDateTime(this, param);
+        }
+
+        @Override
+        protected boolean equalsType(DataTypeInfo<?> obj) {
+            return obj instanceof DateTimeTypeInfo;
+        }
+        @Override
+        protected String toSqlString() {
+            return "datetime";
         }
     }
 
@@ -131,7 +245,21 @@ public abstract class DataTypeInfo<T> {
         public void accept(DataTypeInfoVisitor visitor) {
             visitor.caseByte(this);
         }
+        @Override
+        public <TRes,TParam> TRes accept2(DataTypeInfoVisitor2<TRes,TParam> visitor, TParam param) {
+            return visitor.caseByte(this, param);
+        }
+
+        @Override
+        protected boolean equalsType(DataTypeInfo<?> obj) {
+            return obj instanceof ByteTypeInfo;
+        }
+        @Override
+        protected String toSqlString() {
+            return "byte";
+        }
     }
+
     public static class IntegerTypeInfo extends IntegralTypeInfo<Integer> {
         public static final IntegerTypeInfo INSTANCE = new IntegerTypeInfo();
         private IntegerTypeInfo() { super(Integer.class, int.class); }
@@ -139,7 +267,21 @@ public abstract class DataTypeInfo<T> {
         public void accept(DataTypeInfoVisitor visitor) {
             visitor.caseInteger(this);
         }
+        @Override
+        public <TRes,TParam> TRes accept2(DataTypeInfoVisitor2<TRes,TParam> visitor, TParam param) {
+            return visitor.caseInteger(this, param);
+        }
+
+        @Override
+        protected boolean equalsType(DataTypeInfo<?> obj) {
+            return obj instanceof IntegerTypeInfo;
+        }
+        @Override
+        protected String toSqlString() {
+            return "int";
+        }
     }
+
     public static class LongTypeInfo extends IntegralTypeInfo<Long> {
         public static final LongTypeInfo INSTANCE = new LongTypeInfo();
         private LongTypeInfo() { super(Long.class, long.class); }
@@ -147,13 +289,40 @@ public abstract class DataTypeInfo<T> {
         public void accept(DataTypeInfoVisitor visitor) {
             visitor.caseLong(this);
         }
+        @Override
+        public <TRes,TParam> TRes accept2(DataTypeInfoVisitor2<TRes,TParam> visitor, TParam param) {
+            return visitor.caseLong(this, param);
+        }
+
+        @Override
+        protected boolean equalsType(DataTypeInfo<?> obj) {
+            return obj instanceof LongTypeInfo;
+        }
+        @Override
+        protected String toSqlString() {
+            return "long";
+        }
     }
+
     public static class ShortTypeInfo extends IntegralTypeInfo<Short> {
         public static final ShortTypeInfo INSTANCE = new ShortTypeInfo();
         private ShortTypeInfo() { super(Short.class, short.class); }
         @Override
         public void accept(DataTypeInfoVisitor visitor) {
             visitor.caseShort(this);
+        }
+        @Override
+        public <TRes,TParam> TRes accept2(DataTypeInfoVisitor2<TRes,TParam> visitor, TParam param) {
+            return visitor.caseShort(this, param);
+        }
+
+        @Override
+        protected boolean equalsType(DataTypeInfo<?> obj) {
+            return obj instanceof ShortTypeInfo;
+        }
+        @Override
+        protected String toSqlString() {
+            return "short";
         }
     }
 
@@ -171,6 +340,20 @@ public abstract class DataTypeInfo<T> {
         public void accept(DataTypeInfoVisitor visitor) {
             visitor.caseFloat(this);
         }
+        @Override
+        public <TRes,TParam> TRes accept2(DataTypeInfoVisitor2<TRes,TParam> visitor, TParam param) {
+            return visitor.caseFloat(this, param);
+        }
+
+        @Override
+        protected boolean equalsType(DataTypeInfo<?> obj) {
+            return obj instanceof FloatTypeInfo;
+        }
+
+        @Override
+        protected String toSqlString() {
+            return "float";
+        }
     }
 
     public static class DoubleTypeInfo extends FractionalTypeInfo<Double> {
@@ -180,6 +363,19 @@ public abstract class DataTypeInfo<T> {
         public void accept(DataTypeInfoVisitor visitor) {
             visitor.caseDouble(this);
         }
+        @Override
+        public <TRes,TParam> TRes accept2(DataTypeInfoVisitor2<TRes,TParam> visitor, TParam param) {
+            return visitor.caseDouble(this, param);
+        }
+
+        @Override
+        protected boolean equalsType(DataTypeInfo<?> obj) {
+            return obj instanceof DoubleTypeInfo;
+        }
+        @Override
+        protected String toSqlString() {
+            return "double";
+        }
     }
 
     public static class DecimalTypeInfo extends FractionalTypeInfo<BigDecimal> {
@@ -188,6 +384,19 @@ public abstract class DataTypeInfo<T> {
         @Override
         public void accept(DataTypeInfoVisitor visitor) {
             visitor.caseDecimal(this);
+        }
+        @Override
+        public <TRes,TParam> TRes accept2(DataTypeInfoVisitor2<TRes,TParam> visitor, TParam param) {
+            return visitor.caseDecimal(this, param);
+        }
+
+        @Override
+        protected boolean equalsType(DataTypeInfo<?> obj) {
+            return obj instanceof DecimalTypeInfo;
+        }
+        @Override
+        protected String toSqlString() {
+            return "decimal";
         }
     }
 
@@ -213,6 +422,7 @@ public abstract class DataTypeInfo<T> {
 
         // TOADD public final Supplier<T> createMethod;
 
+        // do not use directly, cf StructTypeInfoBuilder
         /*pp*/ StructTypeInfo(String name, Class<T> objClass,
                               LinkedHashMap<String, StructFieldInfoBuilder<T, ?>> fieldBuilders) {
             super(objClass);
@@ -227,6 +437,43 @@ public abstract class DataTypeInfo<T> {
         @Override
         public void accept(DataTypeInfoVisitor visitor) {
             visitor.caseStruct(this);
+        }
+        @Override
+        public <TRes,TParam> TRes accept2(DataTypeInfoVisitor2<TRes,TParam> visitor, TParam param) {
+            return visitor.caseStruct(this, param);
+        }
+
+        @Override
+        protected boolean equalsType(DataTypeInfo<?> obj) {
+            if (!(obj instanceof StructTypeInfo)) {
+                return false;
+            }
+            StructTypeInfo<?> other = (StructTypeInfo<?>) obj;
+            if (!name.equals(other.name) || !objClass.equals(other.objClass)) {
+                return false;
+            }
+            if (!fields.equals(other.fields)) {
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        protected String toSqlString() {
+            StringBuilder sb = new StringBuilder();
+            sb.append("struct<");
+            int fieldCount = fields.size();
+            for(int i = 0; i < fieldCount; i++) {
+                val f = fields.get(i);
+                sb.append(f.name);
+                sb.append(":");
+                sb.append(f.dataType.toString());
+                if (i+1 < fieldCount) {
+                    sb.append(",");
+                }
+            }
+            sb.append(">");
+            return sb.toString();
         }
 
         public StructTypeDTO toDTO() {
@@ -256,6 +503,7 @@ public abstract class DataTypeInfo<T> {
             DataTypeDTO dateTypeDTO = DataTypeToDTOConverter.toDTO(dataType);
             return new StructFieldDTO(name, dateTypeDTO, allowNullable);
         }
+
     }
 
     //---------------------------------------------------------------------------------------------
@@ -280,6 +528,27 @@ public abstract class DataTypeInfo<T> {
         public void accept(DataTypeInfoVisitor visitor) {
             visitor.caseMap(this);
         }
+        @Override
+        public <TRes,TParam> TRes accept2(DataTypeInfoVisitor2<TRes,TParam> visitor, TParam param) {
+            return visitor.caseMap(this, param);
+        }
+
+        @Override
+        protected boolean equalsType(DataTypeInfo<?> obj) {
+            if (!(obj instanceof MapTypeInfo)) {
+                return false;
+            }
+            MapTypeInfo other = (MapTypeInfo) obj;
+            if (!keyType.equals(other.keyType) || !valueType.equals(other.valueType) || valueContainsNull!=other.valueContainsNull) {
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        protected String toSqlString() {
+            return "map<" + keyType.toSqlString() + "," + valueType.toSqlString() + ">";
+        }
     }
 
     //---------------------------------------------------------------------------------------------
@@ -301,6 +570,27 @@ public abstract class DataTypeInfo<T> {
         @Override
         public void accept(DataTypeInfoVisitor visitor) {
             visitor.caseArray(this);
+        }
+        @Override
+        public <TRes,TParam> TRes accept2(DataTypeInfoVisitor2<TRes,TParam> visitor, TParam param) {
+            return visitor.caseArray(this, param);
+        }
+
+        @Override
+        protected boolean equalsType(DataTypeInfo<?> obj) {
+            if (!(obj instanceof ArrayTypeInfo)) {
+                return false;
+            }
+            ArrayTypeInfo other = (ArrayTypeInfo) obj;
+            if (!elementType.equals(other.elementType) || containsNulls!=other.containsNulls) {
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        protected String toSqlString() {
+            return "array<" + elementType.toSqlString() + ">";
         }
 
     }

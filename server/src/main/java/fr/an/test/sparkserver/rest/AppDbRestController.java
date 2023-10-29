@@ -12,13 +12,10 @@ import org.springframework.web.bind.annotation.*;
         produces = "application/json")
 public class AppDbRestController extends AbstractRestController {
 
-    protected final SqlExprParserService sqlExprService;
-
     //---------------------------------------------------------------------------------------------
 
-    public AppDbRestController(SqlExprParserService sqlExprService) {
+    public AppDbRestController() {
         super("/api/db");
-        this.sqlExprService = sqlExprService;
     }
 
     //---------------------------------------------------------------------------------------------
@@ -26,11 +23,6 @@ public class AppDbRestController extends AbstractRestController {
     @GetMapping(path="/info")
     public DatabaseInfoDTO getDatabaseInfo() {
         return AppDbMetadata.DB.toDTO();
-    }
-
-    @PostMapping(path="/test-parse-query")
-    public ParseQueryResponseDTO parseQueryRequest(@RequestBody ParseQueryRequestDTO req) {
-        return sqlExprService.parseQueryRequest(req);
     }
 
 }

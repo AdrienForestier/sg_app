@@ -2,9 +2,10 @@ package fr.an.exprlib.sql.analysis;
 
 import fr.an.exprlib.metadata.TableInfo;
 import fr.an.exprlib.sql.eval.EvalCtx;
-import fr.an.exprlib.sql.expr.SimpleBinaryOperator;
-import fr.an.exprlib.sql.expr.SimpleBinaryOperators;
+import fr.an.exprlib.sql.eval.ops.SimpleBinaryOperator;
+import fr.an.exprlib.sql.eval.ops.SimpleBinaryOperators;
 import fr.an.exprlib.sql.expr.SimpleExpr;
+import fr.an.exprlib.sql.expr.SimpleExpr.NamedSimpleExpr;
 import fr.an.exprlib.sql.expr.SimpleExprVisitor2;
 import lombok.val;
 
@@ -28,8 +29,13 @@ public class SimpleExprToEvalFunctionResolver {
             }
 
             @Override
+            public BiFunction<T, EvalCtx, Object> caseNamed(NamedSimpleExpr expr, Void unused) {
+                return expr.underlying.accept(this, unused);
+            }
+
+            @Override
             public BiFunction<T, EvalCtx, Object> caseFieldAccess(SimpleExpr.FieldAccessExpr expr, Void unused) {
-                Function<T, ?> objGetter = tableInfo.resolve(expr.field);
+                Function<T, ?> objGetter = tableInfo.resolveObjectEvalFunc(expr.field);
                 return (obj,ctx) -> objGetter.apply(obj);
             }
 
@@ -50,11 +56,6 @@ public class SimpleExprToEvalFunctionResolver {
                     return objByIdMap.get(idValue);
                 };
 
-            }
-
-            @Override
-            public BiFunction<T, EvalCtx, Object> caseGroupAccumulator(SimpleExpr.GroupAccumulatorExpr expr, Void unused) {
-                throw new IllegalStateException("analytical columns should be handled separately..");
             }
 
             @Override

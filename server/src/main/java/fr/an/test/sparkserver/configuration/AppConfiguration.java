@@ -68,21 +68,21 @@ public class AppConfiguration {
         Dataset<Row> salesDs = loadSalesDs(sparkSession);
 
         log.info("register as global temporary view (replace metastore..)");
-        registerAsGlobalTempView(userDs, "user");
-        registerAsGlobalTempView(eventDs, "event");
-        registerAsGlobalTempView(categoryDs, "category");
-        registerAsGlobalTempView(dateDs, "date");
-        registerAsGlobalTempView(venueDs, "venue");
-        registerAsGlobalTempView(listingDs, "listing");
-        registerAsGlobalTempView(salesDs, "sales");
+        registerAsTempView(userDs, "user");
+        registerAsTempView(eventDs, "event");
+        registerAsTempView(categoryDs, "category");
+        registerAsTempView(dateDs, "date");
+        registerAsTempView(venueDs, "venue");
+        registerAsTempView(listingDs, "listing");
+        registerAsTempView(salesDs, "sales");
 
         return new AppDatasets(userDs, eventDs, categoryDs, dateDs, venueDs, listingDs, salesDs);
     }
 
-    private static void registerAsGlobalTempView(Dataset<Row> ds, String tableName) throws AnalysisException {
+    private static void registerAsTempView(Dataset<Row> ds, String tableName) throws AnalysisException {
         val dsVarName = tableName + "Ds";
-        log.info("register spark DataSet<Row> " + dsVarName + " as global temp view '" + tableName + "'");
-        ds.createGlobalTempView(tableName);
+        log.info("register spark DataSet<Row> " + dsVarName + " as temp view '" + tableName + "'");
+        ds.createOrReplaceTempView(tableName);
     }
 
     @NotNull
