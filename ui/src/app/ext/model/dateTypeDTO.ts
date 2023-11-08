@@ -9,8 +9,7 @@
  * https://github.com/swagger-api/swagger-codegen.git
  * Do not edit the class manually.
  */
+import { DataTypeDTO } from './dataTypeDTO';
 
-export interface ColumnInfoDTO { 
-    name?: string;
-    type?: string;
+export interface DateTypeDTO extends DataTypeDTO { 
 }

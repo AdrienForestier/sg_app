@@ -19,7 +19,6 @@ import { Observable }                                        from 'rxjs';
 
 import { QuerySimpleTableColumnsParamsDTO } from '../model/querySimpleTableColumnsParamsDTO';
 import { RowDTO } from '../model/rowDTO';
-import { SalesDTO } from '../model/salesDTO';
 import { TableInfoDTO } from '../model/tableInfoDTO';
 
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -27,7 +26,7 @@ import { Configuration }                                     from '../configurat
 
 
 @Injectable()
-export class SalesRestService {
+export class DispatchGenericQueryRestControllerService {
 
     protected basePath = 'http://localhost:8080';
     public defaultHeaders = new HttpHeaders();
@@ -61,14 +60,19 @@ export class SalesRestService {
     /**
      * list first N(default&#x3D;20)
      * 
+     * @param tableName 
      * @param limit 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public first2(limit?: number, observe?: 'body', reportProgress?: boolean): Observable<Array<SalesDTO>>;
-    public first2(limit?: number, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Array<SalesDTO>>>;
-    public first2(limit?: number, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Array<SalesDTO>>>;
-    public first2(limit?: number, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public first7(tableName: string, limit?: number, observe?: 'body', reportProgress?: boolean): Observable<Array<any>>;
+    public first7(tableName: string, limit?: number, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Array<any>>>;
+    public first7(tableName: string, limit?: number, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Array<any>>>;
+    public first7(tableName: string, limit?: number, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+
+        if (tableName === null || tableName === undefined) {
+            throw new Error('Required parameter tableName was null or undefined when calling first7.');
+        }
 
 
         let queryParameters = new HttpParams({encoder: new CustomHttpUrlEncodingCodec()});
@@ -80,7 +84,7 @@ export class SalesRestService {
 
         // to determine the Accept header
         let httpHeaderAccepts: string[] = [
-            '*/*'
+            'application/json'
         ];
         const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         if (httpHeaderAcceptSelected != undefined) {
@@ -91,7 +95,7 @@ export class SalesRestService {
         const consumes: string[] = [
         ];
 
-        return this.httpClient.request<Array<SalesDTO>>('get',`${this.basePath}/api/specific/sales/first`,
+        return this.httpClient.request<Array<any>>('get',`${this.basePath}/api/dispatch-table/${encodeURIComponent(String(tableName))}/first`,
             {
                 params: queryParameters,
                 withCredentials: this.configuration.withCredentials,
@@ -105,19 +109,24 @@ export class SalesRestService {
     /**
      * list all
      * 
+     * @param tableName 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public list2(observe?: 'body', reportProgress?: boolean): Observable<Array<SalesDTO>>;
-    public list2(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Array<SalesDTO>>>;
-    public list2(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Array<SalesDTO>>>;
-    public list2(observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public list7(tableName: string, observe?: 'body', reportProgress?: boolean): Observable<Array<any>>;
+    public list7(tableName: string, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Array<any>>>;
+    public list7(tableName: string, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Array<any>>>;
+    public list7(tableName: string, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+
+        if (tableName === null || tableName === undefined) {
+            throw new Error('Required parameter tableName was null or undefined when calling list7.');
+        }
 
         let headers = this.defaultHeaders;
 
         // to determine the Accept header
         let httpHeaderAccepts: string[] = [
-            '*/*'
+            'application/json'
         ];
         const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         if (httpHeaderAcceptSelected != undefined) {
@@ -128,7 +137,7 @@ export class SalesRestService {
         const consumes: string[] = [
         ];
 
-        return this.httpClient.request<Array<SalesDTO>>('get',`${this.basePath}/api/specific/sales`,
+        return this.httpClient.request<Array<any>>('get',`${this.basePath}/api/dispatch-table/${encodeURIComponent(String(tableName))}`,
             {
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
@@ -139,26 +148,31 @@ export class SalesRestService {
     }
 
     /**
-     * query
+     * query simple columns
      * 
      * @param body 
+     * @param tableName 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public query2(body: QuerySimpleTableColumnsParamsDTO, observe?: 'body', reportProgress?: boolean): Observable<Array<RowDTO>>;
-    public query2(body: QuerySimpleTableColumnsParamsDTO, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Array<RowDTO>>>;
-    public query2(body: QuerySimpleTableColumnsParamsDTO, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Array<RowDTO>>>;
-    public query2(body: QuerySimpleTableColumnsParamsDTO, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public query7(body: QuerySimpleTableColumnsParamsDTO, tableName: string, observe?: 'body', reportProgress?: boolean): Observable<Array<RowDTO>>;
+    public query7(body: QuerySimpleTableColumnsParamsDTO, tableName: string, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Array<RowDTO>>>;
+    public query7(body: QuerySimpleTableColumnsParamsDTO, tableName: string, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Array<RowDTO>>>;
+    public query7(body: QuerySimpleTableColumnsParamsDTO, tableName: string, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         if (body === null || body === undefined) {
-            throw new Error('Required parameter body was null or undefined when calling query2.');
+            throw new Error('Required parameter body was null or undefined when calling query7.');
+        }
+
+        if (tableName === null || tableName === undefined) {
+            throw new Error('Required parameter tableName was null or undefined when calling query7.');
         }
 
         let headers = this.defaultHeaders;
 
         // to determine the Accept header
         let httpHeaderAccepts: string[] = [
-            '*/*'
+            'application/json'
         ];
         const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         if (httpHeaderAcceptSelected != undefined) {
@@ -174,7 +188,7 @@ export class SalesRestService {
             headers = headers.set('Content-Type', httpContentTypeSelected);
         }
 
-        return this.httpClient.request<Array<RowDTO>>('put',`${this.basePath}/api/specific/sales/query-generic`,
+        return this.httpClient.request<Array<RowDTO>>('put',`${this.basePath}/api/dispatch-table/${encodeURIComponent(String(tableName))}/query-simple-cols`,
             {
                 body: body,
                 withCredentials: this.configuration.withCredentials,
@@ -188,19 +202,24 @@ export class SalesRestService {
     /**
      * get table info metadata
      * 
+     * @param tableName 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public tableInfo2(observe?: 'body', reportProgress?: boolean): Observable<TableInfoDTO>;
-    public tableInfo2(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<TableInfoDTO>>;
-    public tableInfo2(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<TableInfoDTO>>;
-    public tableInfo2(observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public tableInfo7(tableName: string, observe?: 'body', reportProgress?: boolean): Observable<TableInfoDTO>;
+    public tableInfo7(tableName: string, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<TableInfoDTO>>;
+    public tableInfo7(tableName: string, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<TableInfoDTO>>;
+    public tableInfo7(tableName: string, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+
+        if (tableName === null || tableName === undefined) {
+            throw new Error('Required parameter tableName was null or undefined when calling tableInfo7.');
+        }
 
         let headers = this.defaultHeaders;
 
         // to determine the Accept header
         let httpHeaderAccepts: string[] = [
-            '*/*'
+            'application/json'
         ];
         const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         if (httpHeaderAcceptSelected != undefined) {
@@ -211,7 +230,7 @@ export class SalesRestService {
         const consumes: string[] = [
         ];
 
-        return this.httpClient.request<TableInfoDTO>('get',`${this.basePath}/api/specific/sales/tableInfo`,
+        return this.httpClient.request<TableInfoDTO>('get',`${this.basePath}/api/dispatch-table/${encodeURIComponent(String(tableName))}/tableInfo`,
             {
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,

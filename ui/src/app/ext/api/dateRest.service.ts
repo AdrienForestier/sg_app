@@ -17,9 +17,9 @@ import { CustomHttpUrlEncodingCodec }                        from '../encoder';
 
 import { Observable }                                        from 'rxjs';
 
+import { DateDTO } from '../model/dateDTO';
 import { QuerySimpleTableColumnsParamsDTO } from '../model/querySimpleTableColumnsParamsDTO';
 import { RowDTO } from '../model/rowDTO';
-import { SalesDTO } from '../model/salesDTO';
 import { TableInfoDTO } from '../model/tableInfoDTO';
 
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -27,7 +27,7 @@ import { Configuration }                                     from '../configurat
 
 
 @Injectable()
-export class SalesRestService {
+export class DateRestService {
 
     protected basePath = 'http://localhost:8080';
     public defaultHeaders = new HttpHeaders();
@@ -65,10 +65,10 @@ export class SalesRestService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public first2(limit?: number, observe?: 'body', reportProgress?: boolean): Observable<Array<SalesDTO>>;
-    public first2(limit?: number, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Array<SalesDTO>>>;
-    public first2(limit?: number, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Array<SalesDTO>>>;
-    public first2(limit?: number, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public first5(limit?: number, observe?: 'body', reportProgress?: boolean): Observable<Array<DateDTO>>;
+    public first5(limit?: number, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Array<DateDTO>>>;
+    public first5(limit?: number, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Array<DateDTO>>>;
+    public first5(limit?: number, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
 
         let queryParameters = new HttpParams({encoder: new CustomHttpUrlEncodingCodec()});
@@ -91,7 +91,7 @@ export class SalesRestService {
         const consumes: string[] = [
         ];
 
-        return this.httpClient.request<Array<SalesDTO>>('get',`${this.basePath}/api/specific/sales/first`,
+        return this.httpClient.request<Array<DateDTO>>('get',`${this.basePath}/api/specific/date/first`,
             {
                 params: queryParameters,
                 withCredentials: this.configuration.withCredentials,
@@ -108,10 +108,10 @@ export class SalesRestService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public list2(observe?: 'body', reportProgress?: boolean): Observable<Array<SalesDTO>>;
-    public list2(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Array<SalesDTO>>>;
-    public list2(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Array<SalesDTO>>>;
-    public list2(observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public list5(observe?: 'body', reportProgress?: boolean): Observable<Array<DateDTO>>;
+    public list5(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Array<DateDTO>>>;
+    public list5(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Array<DateDTO>>>;
+    public list5(observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         let headers = this.defaultHeaders;
 
@@ -128,7 +128,7 @@ export class SalesRestService {
         const consumes: string[] = [
         ];
 
-        return this.httpClient.request<Array<SalesDTO>>('get',`${this.basePath}/api/specific/sales`,
+        return this.httpClient.request<Array<DateDTO>>('get',`${this.basePath}/api/specific/date`,
             {
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
@@ -145,13 +145,13 @@ export class SalesRestService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public query2(body: QuerySimpleTableColumnsParamsDTO, observe?: 'body', reportProgress?: boolean): Observable<Array<RowDTO>>;
-    public query2(body: QuerySimpleTableColumnsParamsDTO, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Array<RowDTO>>>;
-    public query2(body: QuerySimpleTableColumnsParamsDTO, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Array<RowDTO>>>;
-    public query2(body: QuerySimpleTableColumnsParamsDTO, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public query5(body: QuerySimpleTableColumnsParamsDTO, observe?: 'body', reportProgress?: boolean): Observable<Array<RowDTO>>;
+    public query5(body: QuerySimpleTableColumnsParamsDTO, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Array<RowDTO>>>;
+    public query5(body: QuerySimpleTableColumnsParamsDTO, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Array<RowDTO>>>;
+    public query5(body: QuerySimpleTableColumnsParamsDTO, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         if (body === null || body === undefined) {
-            throw new Error('Required parameter body was null or undefined when calling query2.');
+            throw new Error('Required parameter body was null or undefined when calling query5.');
         }
 
         let headers = this.defaultHeaders;
@@ -174,7 +174,7 @@ export class SalesRestService {
             headers = headers.set('Content-Type', httpContentTypeSelected);
         }
 
-        return this.httpClient.request<Array<RowDTO>>('put',`${this.basePath}/api/specific/sales/query-generic`,
+        return this.httpClient.request<Array<RowDTO>>('put',`${this.basePath}/api/specific/date/query-generic`,
             {
                 body: body,
                 withCredentials: this.configuration.withCredentials,
@@ -191,10 +191,10 @@ export class SalesRestService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public tableInfo2(observe?: 'body', reportProgress?: boolean): Observable<TableInfoDTO>;
-    public tableInfo2(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<TableInfoDTO>>;
-    public tableInfo2(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<TableInfoDTO>>;
-    public tableInfo2(observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public tableInfo5(observe?: 'body', reportProgress?: boolean): Observable<TableInfoDTO>;
+    public tableInfo5(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<TableInfoDTO>>;
+    public tableInfo5(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<TableInfoDTO>>;
+    public tableInfo5(observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         let headers = this.defaultHeaders;
 
@@ -211,7 +211,7 @@ export class SalesRestService {
         const consumes: string[] = [
         ];
 
-        return this.httpClient.request<TableInfoDTO>('get',`${this.basePath}/api/specific/sales/tableInfo`,
+        return this.httpClient.request<TableInfoDTO>('get',`${this.basePath}/api/specific/date/tableInfo`,
             {
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,

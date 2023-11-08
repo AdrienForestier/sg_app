@@ -9,8 +9,25 @@
  * https://github.com/swagger-api/swagger-codegen.git
  * Do not edit the class manually.
  */
+import { AliasedExprTextDTO } from './aliasedExprTextDTO';
+import { BinaryOpExprDTO } from './binaryOpExprDTO';
+import { FieldAccessExprDTO } from './fieldAccessExprDTO';
+import { GroupAccumulatorExprDTO } from './groupAccumulatorExprDTO';
+import { JoinDTO } from './joinDTO';
+import { LiteralExprDTO } from './literalExprDTO';
+import { OrderByDTO } from './orderByDTO';
+import { RefByIdLookupExprDTO } from './refByIdLookupExprDTO';
 
 export interface QueryRequestDTO { 
+    select?: Array<AliasedExprTextDTO>;
+    from?: string;
+    joins?: Array<JoinDTO>;
+    whereConditions?: Array<BinaryOpExprDTO | FieldAccessExprDTO | GroupAccumulatorExprDTO | LiteralExprDTO | RefByIdLookupExprDTO>;
+    orderBy?: Array<OrderByDTO>;
+    groupBy?: Array<string>;
+    groupByGroupingSets?: Array<Array<string>>;
+    groupByRollup?: Array<string>;
+    groupByCube?: Array<string>;
+    havingConditions?: Array<BinaryOpExprDTO | FieldAccessExprDTO | GroupAccumulatorExprDTO | LiteralExprDTO | RefByIdLookupExprDTO>;
     limit?: number;
-    exprs?: Array<string>;
 }

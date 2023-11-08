@@ -12,6 +12,13 @@
       <textarea [ngModel]="salesTableInfoJson" cols="120" rows="20"></textarea>
     </div>
   </div>
+  <div class="row">
+    <div class="col-md-4">
+      <ul>
+          <li *ngFor="let field of fieldNames">{{field}}</li>
+        </ul>
+    </div>
+  </div>
 
   <div class="row">
     <label class="col-md-2">Sales first 20 rows</label>

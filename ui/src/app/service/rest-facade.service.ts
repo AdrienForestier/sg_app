@@ -10,10 +10,10 @@ export class RestFacadeService {
   constructor(private salesRestService: SalesRestService) { }
 
   getTableInfoSales(): Observable<TableInfoDTO> {
-    return this.salesRestService.tableInfo();
+    return this.salesRestService.tableInfo2();
   }
   queryFirstSales(): Observable<SalesDTO[]> {
-    return this.salesRestService.first();
+    return this.salesRestService.first2();
   }
 
 }

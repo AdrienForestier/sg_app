@@ -9,12 +9,14 @@
  * https://github.com/swagger-api/swagger-codegen.git
  * Do not edit the class manually.
  */
-import { ForeignKeyInfoDTO } from './foreignKeyInfoDTO';
-import { StructTypeDTO } from './structTypeDTO';
 
-export interface TableInfoDTO { 
-    name?: string;
-    schema?: StructTypeDTO;
-    pkColumns?: Array<string>;
-    foreignKeyInfos?: Array<ForeignKeyInfoDTO>;
+export interface ListingDTO { 
+    listId?: number;
+    sellerId?: number;
+    eventId?: number;
+    dateId?: number;
+    numTickets?: number;
+    pricePerTicket?: number;
+    totalPrice?: number;
+    listTime?: Date;
 }

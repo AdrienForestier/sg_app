@@ -8,11 +8,12 @@ import {SalesDTO, TableInfoDTO} from "../ext";
 })
 export class TestRestComponent {
 
-  salesTableInfo: TableInfoDTO = {cols:[]};
+  salesTableInfo: TableInfoDTO = {schema: { fields:[] }};
   salesTableInfoJson= '';
 
   salesFirstRows: SalesDTO[] = [];
   salesFirstRowsJson = '';
+  fieldNames: string[]= [];
 
   constructor(private restFacadeService: RestFacadeService) {}
 
@@ -20,7 +21,11 @@ export class TestRestComponent {
     this.restFacadeService.getTableInfoSales().subscribe({ next: res => {
         this.salesTableInfo = res;
         this.salesTableInfoJson = JSON.stringify(res, null, 2);
-        console.log('done get Sales table info')
+        console.log('done get Sales table info');
+        if (res.schema?.fields) {
+          this.fieldNames = res.schema.fields!.map(x => x.name!);
+          console.log('fieldNames', this.fieldNames);
+        }
       }, error: err => {
         console.log('Failed', err)
       }});

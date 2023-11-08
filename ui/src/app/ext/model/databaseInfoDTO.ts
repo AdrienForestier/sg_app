@@ -9,12 +9,10 @@
  * https://github.com/swagger-api/swagger-codegen.git
  * Do not edit the class manually.
  */
-import { ForeignKeyInfoDTO } from './foreignKeyInfoDTO';
-import { StructTypeDTO } from './structTypeDTO';
+import { JoinRelationship } from './joinRelationship';
+import { TableInfoDTO } from './tableInfoDTO';
 
-export interface TableInfoDTO { 
-    name?: string;
-    schema?: StructTypeDTO;
-    pkColumns?: Array<string>;
-    foreignKeyInfos?: Array<ForeignKeyInfoDTO>;
+export interface DatabaseInfoDTO { 
+    tables?: Array<TableInfoDTO>;
+    otherJoinRelationShips?: Array<JoinRelationship>;
 }
