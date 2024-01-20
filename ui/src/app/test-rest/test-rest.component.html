@@ -26,6 +26,7 @@
       </select>
     </div>
 
+
     <div class="col-md-2" *ngIf="this.fieldNames.includes(selectedValueDropDown2)">
       <select id="dropdown3" [(ngModel)]="selectedValueDropDown3" (change)="addFilterToFilter(selectedValueDropDown3)">
         <option disabled selected value="default">Select a filter</option>

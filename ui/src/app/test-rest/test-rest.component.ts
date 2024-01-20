@@ -20,6 +20,7 @@ export class TestRestComponent {
   factsTables: string[] = ['Listing', 'Sales'];
   listingTables: string[] = ['Category', 'Date', 'Event', 'User', 'Venue'];
   selectedValue: string = '';
+  selectedFactTableValue: string = '';
   selectedValueDropDown2: string = '';
   selectedValueDropDown3: string = '';
   selectedTextArea: string = '';
@@ -204,7 +205,7 @@ export class TestRestComponent {
     if(dropdown){
       const selectedValue = dropdown.value;
       console.log(selectedValue);
-      this.handleDropdownChange(selectedValue);
+      this.handleDropdownChange2(selectedValue);
       this.filter.push(selectedValue);
     }
   }
@@ -240,6 +241,13 @@ export class TestRestComponent {
     }
   }
 
+  handleDropdownChange2(selectedValue: string){
+    const method = `onClickGetTableInfo${selectedValue}` as keyof TestRestComponent;
+    if (typeof this[method] === 'function'){
+      (this[method] as Function).call(this);
+    }
+  }
+
   getFilters(value : string){
     if(this.filter.length < 1){this.filter.push(value);}
     else {while(this.filter.length >= 1){this.filter.shift();}this.filter.push(value);}
@@ -258,6 +266,12 @@ export class TestRestComponent {
         break;
     }
     return this.filtersToReturn;
+  }
+
+  getVariablesFactTable(value : string) {
+    switch (value) {
+
+    }
   }
 
   addFilterToFilter(filter : string){
