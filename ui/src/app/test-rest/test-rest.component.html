@@ -1,34 +1,81 @@
 <H1>Test Rest APIs</H1>
 
 <div class="container-fluid">
-
   <div class="row">
-    <label class="col-md-2">Sales table info</label>
-    <span class="col-md-1">
-      <button type="button" class="btn btn-outline-primary"
-              (click)="onClickGetTableInfoSales()">Get TableInfo</button>
-    </span>
-    <div class="col-md-9">
-      <textarea [ngModel]="salesTableInfoJson" cols="120" rows="20"></textarea>
+    <div class="col-md-1">
+      <label for="dropdown">Select a table :</label>
+    </div>
+    <div class="col-md-1">
+      <select id="dropdown" [(ngModel)]="selectedValue" (change)="initializeDropdown()">
+        <option *ngFor="let value of dropdownValues" [value]="value">{{ value }}</option>
+      </select>
     </div>
   </div>
-  <div class="row">
+
+  <div class="row" style="margin-top: 20px">
+    <div class="col-md-9">
+      <textarea [ngModel]="salesTableInfoJson" cols="120" rows="10"></textarea>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top: 20px">
+    <div class="col-md-2" *ngIf="dropdownValues.includes(selectedValue)">
+      <select id="dropdown2" [(ngModel)]="selectedValueDropDown2" (change)="getFilters(selectedValueDropDown2)">
+        <option disabled selected value="default">Select a variable</option>
+        <option *ngFor="let field of fieldNames">{{field}}</option>
+      </select>
+    </div>
+
+    <div class="col-md-2" *ngIf="this.fieldNames.includes(selectedValueDropDown2)">
+      <select id="dropdown3" [(ngModel)]="selectedValueDropDown3" (change)="addFilterToFilter(selectedValueDropDown3)">
+        <option disabled selected value="default">Select a filter</option>
+        <option *ngFor="let filter of filtersToReturn">{{filter}}</option>
+      </select>
+    </div>
+
+    <div class="col-md-2" *ngIf="this.filtersToReturn.includes(selectedValueDropDown3)">
+      <textarea [(ngModel)]="selectedTextArea" cols="20" rows="1"></textarea>
+    </div>
+
+    <div class="col-md-2" *ngIf="selectedTextArea.trim() !== ''">
+      <button type="button" class="btn btn-primary" (click)="addValueToFilter(selectedTextArea)">Save</button>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top: 20px">
+    <h2>Filters list :</h2>
+    <div *ngIf="this.filterList.length === 0">
+      No filters yet.
+    </div>
+    <div *ngIf="this.filterList.length !== 0">
+      <div class="col-md-3">
+      <option *ngFor="let filterArr of filterList; let i = index" class="d-flex justify-content-between align-items-center mb-2">
+        <span>{{filterArr}}</span>
+        <button type="button" class="btn btn-danger" (click)="deleteFilter(i)">Delete Filter</button>
+      </option>
+      </div>
+    </div>
+  </div>
+
+  <!--<div class="row" style="margin-top: 20px">
     <div class="col-md-4">
       <ul>
-          <li *ngFor="let field of fieldNames">{{field}}</li>
-        </ul>
+        <li *ngFor="let field of fieldNames">{{field}}</li>
+      </ul>
     </div>
-  </div>
+  </div>-->
 
-  <div class="row">
-    <label class="col-md-2">Sales first 20 rows</label>
-    <span class="col-md-1">
+  <div class="row" style="margin-top: 60px">
+    <label class="col-md-2">Sales first 20 rows :</label>
+    <span class="col-md-2">
       <button type="button" class="btn btn-outline-primary"
               (click)="onClickQuery()">Query First Rows</button>
     </span>
-    <div class="col-md-9">
-      <textarea [ngModel]="salesFirstRowsJson" cols="120" rows="20"></textarea>
-    </div>
   </div>
 
+  <div class="row" style="margin-top: 20px">
+    <div class="col-md-9">
+      <textarea [ngModel]="salesFirstRowsJson" cols="120" rows="10"></textarea>
+    </div>
+  </div>
 </div>
